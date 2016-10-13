@@ -14,5 +14,6 @@ typedef struct Estados {
 
 Estado * nuevoEstado (char * nombre, TIPO tipo);
 void liberarEstado(Estado *estado);
-
+char * getNombre(Estado *estado);
+char * tipoPrinteable(TIPO t, char *str);
 #endif

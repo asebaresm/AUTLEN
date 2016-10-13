@@ -13,22 +13,29 @@ CFLAGS=-g -Wall
 # Directorio en el que se encuentra el proyecto
 DIR=P1
 # Ejecutables
-EJECUTABLES=P1
+EJECUTABLES=P1 testP1
 #==================================================================================
 # Construccion de los ejecutables
 #==================================================================================
 all: $(EJECUTABLES)
 
 P1: estado.o transicion.o afnd.o main.o
-	@echo Generando ejecutable...
+	@echo Generando ejecutable P1...
 	$(CC) $(CFLAGS) -o P1 main.o afnd.o estado.o transicion.o 
 
+testP1: estado.o transicion.o afnd.o testmain.o
+	@echo Generando ejecutable de pruebas...
+	$(CC) $(CFLAGS) -o testP1 testmain.o afnd.o estado.o transicion.o 
 #==================================================================================
 # Generacion .o/.c
 #==================================================================================
 main.o: main.c
 	@echo Compilando main.c...
 	$(CC) $(CFLAGS) -c main.c
+
+testmain.o: testmain.c
+	@echo Compilando main.c...
+	$(CC) $(CFLAGS) -c testmain.c
 
 afnd.o: afnd.c
 	@echo Compilando adnd.c...
