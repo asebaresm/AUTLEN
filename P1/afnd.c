@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #include "afnd.h"
 
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
@@ -20,35 +19,44 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 	afnd->i_trans = 0;
 	afnd->num_trans = 0;
 	afnd->num_simbolos = num_simbolos;
-	afnd->simbolos = (char*) malloc (num_simbolos + 1);
-	memset(afnd->simbolos, 0, num_simbolos);	
+	afnd->simbolos = (char*) malloc (sizeof(char) * (num_simbolos + 1));
+	memset(afnd->simbolos, 0, (size_t)num_simbolos);
 	afnd->cadena_entrada = NULL;
 	afnd->i_cadena = 0;
 	afnd->estados = (Estado **) malloc(num_estados * sizeof(Estado *));
 	afnd->transiciones = NULL;
 	afnd->estados_actuales = (Estado **) malloc(num_estados * sizeof(Estado *));
 	afnd->num_eactuales = 0;
-	printf("AFND nuevo creado\n");
+	DEBUG_PRINT(("AFND nuevo creado\n"));
 	return afnd;
 }
 
 void AFNDElimina(AFND * p_afnd){
-	int i=0;	
-	for (i=0; i<p_afnd->num_estados; i++){
-		liberarEstado(p_afnd->estados[i]);
-	}
-	for (i=0; i<p_afnd->num_trans; i++){
-		liberarTransicion(p_afnd->transiciones[i]);
-	}
+    liberarEstadosAFND(p_afnd);
+    liberarTransicionesANFD(p_afnd);
 
 	free(p_afnd->estados_actuales);
-	free(p_afnd->estados);
-	free(p_afnd->transiciones);
 	free(p_afnd->nombre);
 	free(p_afnd->cadena_entrada);
 	free(p_afnd->simbolos);
 
 	free(p_afnd);
+}
+
+void liberarEstadosAFND(AFND *p_afnd){
+    int i=0;
+    for (i=0; i<p_afnd->num_estados; i++){
+        liberarEstado(p_afnd->estados[i]);
+    }
+    free(p_afnd->estados);
+}
+
+void liberarTransicionesANFD(AFND *p_afnd){
+    int i=0;
+    for (i=0; i<p_afnd->num_trans; i++){
+        liberarTransicion(p_afnd->transiciones[i]);
+    }
+    free(p_afnd->transiciones);
 }
 
 void AFNDImprime(FILE * fd, AFND* p_afnd){
@@ -63,7 +71,7 @@ AFND * AFNDInsertaSimbolo(AFND * p_afnd, char * simbolo){
 	
 	p_afnd->simbolos[p_afnd->i_simbolos] = *simbolo;
 	p_afnd->i_simbolos++;
-	printf("Simbolo nuevo creado\n");
+    DEBUG_PRINT(("Simbolo nuevo creado\n"));
 	
 	return p_afnd;
 }
@@ -75,7 +83,7 @@ AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo){
 
 	p_afnd->estados[p_afnd->i_estados] = nuevoEstado(nombre, tipo);
 	p_afnd->i_estados++;
-	printf("Estado nuevo creado\n");
+    DEBUG_PRINT(("Estado nuevo creado\n"));
 	return p_afnd;
 }
 
@@ -158,6 +166,7 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd,
 	p_afnd->transiciones[p_afnd->i_trans]->e_ini = getEstadoAFND(p_afnd, nombre_estado_i);
 	p_afnd->transiciones[p_afnd->i_trans]->s = (char*) malloc(strlen(nombre_simbolo_entrada) + 1);
 	p_afnd->transiciones[p_afnd->i_trans]->id = (char*) malloc(strlen(id) + 1);
+
 	strcpy(p_afnd->transiciones[p_afnd->i_trans]->s, nombre_simbolo_entrada);
 	strcpy(p_afnd->transiciones[p_afnd->i_trans]->id, id);
 	free(id);
@@ -182,10 +191,10 @@ AFND * AFNDInsertaLetra(AFND * p_afnd, char * letra){
 		return NULL;
 	}
 	if(p_afnd->i_cadena == 0){
-		p_afnd->cadena_entrada = (char *) malloc(sizeof(char) + 1);
+		p_afnd->cadena_entrada = (char *) malloc(strlen(letra)+1);
 		strcpy(p_afnd->cadena_entrada, letra);
 	}else{
-		p_afnd->cadena_entrada = (char *) realloc(p_afnd->cadena_entrada, ((strlen(p_afnd->cadena_entrada)+1)));
+		p_afnd->cadena_entrada = (char *) realloc(p_afnd->cadena_entrada, strlen(p_afnd->cadena_entrada)+ strlen(letra) + 1);
 		strcat(p_afnd->cadena_entrada, letra);
 	}
 	
@@ -195,7 +204,7 @@ AFND * AFNDInsertaLetra(AFND * p_afnd, char * letra){
 
 void AFNDImprimeConjuntoEstadosActual(FILE * fd, AFND * p_afnd){
 	int i = 0;
-	fprintf(fd, "ACTUALMENTE EN {");
+	fprintf(fd, "\nACTUALMENTE EN {");
 	for (i = 0; i<p_afnd->num_eactuales; i++){
 		if (getTipo(p_afnd->estados_actuales[i]) == INICIAL
 		 || getTipo(p_afnd->estados_actuales[i]) == INICIAL_Y_FINAL){
@@ -272,8 +281,6 @@ void AFNDTransita(AFND * p_afnd){
 
 	}
 	*/
-
-
 }
 
 /*Devuelve el estado inicial de uan transicion a partir de su indice*/

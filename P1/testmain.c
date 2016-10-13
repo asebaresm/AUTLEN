@@ -42,6 +42,20 @@ int main(int argc, char ** argv)
 
     AFNDImprimeTransiciones(stdout, p_afnd);
     printf("\n");
+
+
+    p_afnd= AFNDInsertaLetra(p_afnd,"0");
+    p_afnd= AFNDInsertaLetra(p_afnd,"1");
+    p_afnd= AFNDInsertaLetra(p_afnd,"0");
+    p_afnd= AFNDInsertaLetra(p_afnd,"1");
+    p_afnd= AFNDInsertaLetra(p_afnd,"1");
+
+    AFNDImprimeCadenaActual(stdout,p_afnd);
+    printf("\n==============================================");
+
+    AFNDInicializaEstado (p_afnd);
+    AFNDImprimeConjuntoEstadosActual(stdout, p_afnd);
+
     
 /* SE MUESTRA EL AFND DEFINIDO */
     /*fprintf(stdout,"\n****************** AFND *********************\n");

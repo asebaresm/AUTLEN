@@ -7,9 +7,8 @@
 /*NOTA: completar con paso por referencia de los estados*/
 Transicion * nuevaTransicion(Estado * e_inicial, char *simbolo, Estado * e_final){
 	Transicion * t = NULL;
-	if ((t = (Transicion*) malloc (sizeof(Transicion))) == NULL) {
-		return NULL;
-	}
+	t = (Transicion*) malloc (sizeof(Transicion));
+
 	return t;
 }
 

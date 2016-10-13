@@ -7,7 +7,14 @@
 
 #include "estado.h"
 #include "transicion.h"
-/*PRUEBA MERGE (alfonso)*/
+
+#define DEBUG
+#ifdef DEBUG
+# define DEBUG_PRINT(x) printf x
+#else
+# define DEBUG_PRINT(x) do {} while (0)
+#endif
+
 typedef enum { FALSE = 0, TRUE = 1} BOOL;
 
 typedef struct Afnds {
@@ -30,6 +37,10 @@ typedef struct Afnds {
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
 
 void AFNDElimina(AFND * p_afnd);
+
+void liberarEstadosAFND(AFND *p_afnd);
+
+void liberarTransicionesANFD(AFND *p_afnd);
 
 void AFNDImprime(FILE * fd, AFND* p_afnd);
 

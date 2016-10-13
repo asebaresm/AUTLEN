@@ -2,14 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #include "afnd.h"
 
 /* ESTOS INCLUDES DEPENDEN DE LA IMPLEMENTACIÓN, TAL VEZ TÚ DISEÑES OTROS MÓDULOS */
 /*#include "alfabeto.h"
 #include "palabra.h"*/
 #include "estado.h"
-
 
 
 int main(int argc, char ** argv)
