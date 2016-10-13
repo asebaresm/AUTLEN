@@ -57,7 +57,14 @@ clean:
 test_practica:
 	./P1
 
+<<<<<<< HEAD
 valgrind_test: testP1
+=======
+valgrind_test: P1
+	valgrind --leak-check=full --show-leak-kinds=all ./P1
+
+valgrind_testP1: testP1
+>>>>>>> 3b19a4d18575bd6563e1f1556b6bb51b85b2f0d6
 	valgrind --leak-check=full --show-leak-kinds=all ./testP1
 #==================================================================================
 #
