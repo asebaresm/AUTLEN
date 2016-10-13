@@ -7,7 +7,7 @@
 
 #include "estado.h"
 #include "transicion.h"
-
+/*PRUEBA MERGE (alfonso)*/
 typedef enum { FALSE = 0, TRUE = 1} BOOL;
 
 typedef struct Afnds {
