@@ -174,7 +174,7 @@ Estado *getEstadoAFND(AFND *p_afnd, char *id){
 }
 
 AFND * AFNDInsertaLetra(AFND * p_afnd, char * letra){
-
+	
 	return p_afnd;
 }
 

@@ -7,7 +7,6 @@
 
 #include "estado.h"
 
-#define NOT_INIT -1
 
 typedef struct Transiciones{
 	Estado *e_ini;
