@@ -20,9 +20,11 @@ typedef struct Afnds {
 	int i_trans;
 	char *simbolos;
 	char *cadena_entrada;
+	int i_cadena;
 	Estado **estados;
 	Transicion **transiciones;
-	Estado *estados_actuales;
+	Estado **estados_actuales;
+	int num_eactuales;
 } AFND;
 
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
@@ -32,7 +34,6 @@ void AFNDElimina(AFND * p_afnd);
 void AFNDImprime(FILE * fd, AFND* p_afnd);
 
 AFND * AFNDInsertaSimbolo(AFND * p_afnd, char * simbolo);
-
 
 AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo);
 

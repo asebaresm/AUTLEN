@@ -28,6 +28,10 @@ char *getNombre(Estado *e){
 	return e->n;
 }
 
+TIPO getTipo(Estado *e){
+	return e->t;
+}
+
 char * tipoPrinteable(TIPO t, char *str){
 	switch(t){
 		case 0:

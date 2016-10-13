@@ -23,9 +23,11 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 	afnd->simbolos = (char*) malloc (num_simbolos + 1);
 	memset(afnd->simbolos, 0, num_simbolos);	
 	afnd->cadena_entrada = NULL;
+	afnd->i_cadena = 0;
 	afnd->estados = (Estado **) malloc(num_estados * sizeof(Estado *));
 	afnd->transiciones = NULL;
-	afnd->estados_actuales = NULL;
+	afnd->estados_actuales = (Estado **) malloc(num_estados * sizeof(Estado *));
+	afnd->num_eactuales = 0;
 	printf("AFND nuevo creado\n");
 	return afnd;
 }
@@ -38,9 +40,12 @@ void AFNDElimina(AFND * p_afnd){
 	for (i=0; i<p_afnd->num_trans; i++){
 		liberarTransicion(p_afnd->transiciones[i]);
 	}
+
+	free(p_afnd->estados_actuales);
 	free(p_afnd->estados);
 	free(p_afnd->transiciones);
 	free(p_afnd->nombre);
+	free(p_afnd->cadena_entrada);
 	free(p_afnd->simbolos);
 
 	free(p_afnd);
@@ -76,7 +81,6 @@ AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo){
 
 BOOL isSimbolo(AFND *p_afnd, char *id){
 	char c = id[0];
-	/*printf("\nchar es %c\n", c);*/
 	if (strchr(p_afnd->simbolos, c) != NULL){
 		return TRUE;
 	}
@@ -174,28 +178,57 @@ Estado *getEstadoAFND(AFND *p_afnd, char *id){
 }
 
 AFND * AFNDInsertaLetra(AFND * p_afnd, char * letra){
+	if (isSimbolo(p_afnd, letra) == FALSE){
+		return NULL;
+	}
+	if(p_afnd->i_cadena == 0){
+		p_afnd->cadena_entrada = (char *) malloc(sizeof(char) + 1);
+		strcpy(p_afnd->cadena_entrada, letra);
+	}else{
+		p_afnd->cadena_entrada = (char *) realloc(p_afnd->cadena_entrada, ((strlen(p_afnd->cadena_entrada)+1)));
+		strcat(p_afnd->cadena_entrada, letra);
+	}
 	
+	p_afnd->i_cadena++;
 	return p_afnd;
 }
 
 void AFNDImprimeConjuntoEstadosActual(FILE * fd, AFND * p_afnd){
+	int i = 0;
+	fprintf(fd, "ACTUALMENTE EN {");
+	for (i = 0; i<p_afnd->num_eactuales; i++){
+		if (getTipo(p_afnd->estados_actuales[i]) == INICIAL
+		 || getTipo(p_afnd->estados_actuales[i]) == INICIAL_Y_FINAL){
+			fprintf(fd, "->");
+		}
 
+		fprintf(fd, "%s", getNombre(p_afnd->estados_actuales[i]));
+
+		if (getTipo(p_afnd->estados_actuales[i]) == FINAL
+		 || getTipo(p_afnd->estados_actuales[i]) == INICIAL_Y_FINAL){
+			fprintf(fd, "* ");
+		} else {
+			fprintf(fd, " ");
+		}
+	}
+	fprintf(fd, "}\n");
 }
 
 void AFNDImprimeConjuntoEstadosTotal(FILE * fd, AFND * p_afnd){
 	int i = 0;
 	char str[17];
-	printf("\nEstados insertados en el AFND:");
+	fprintf(fd,"\nEstados insertados en el AFND:");
 	for(i=0; i<p_afnd->num_estados; i++){
-		printf("\n\t(%s|%s)", p_afnd->estados[i]->n, tipoPrinteable(p_afnd->estados[i]->t,str));
+		fprintf(fd,"\n\t(%s|%s)", p_afnd->estados[i]->n, tipoPrinteable(p_afnd->estados[i]->t,str));
 	}
+
 }
 
 void AFNDImprimeTransiciones(FILE *fd, AFND *p_afnd){
 	int i= 0;
-	printf("\nTransiciones insertadas en el AFND:");
+	fprintf(fd,"\nTransiciones insertadas en el AFND:");
 	for(i=0; i<p_afnd->num_trans; i++){
-		printf("\n\t(%s|%s|%s) - id:%s", getNombre(p_afnd->transiciones[i]->e_ini), 
+		fprintf(fd,"\n\t(%s|%s|%s) - id:%s", getNombre(p_afnd->transiciones[i]->e_ini), 
 										 p_afnd->transiciones[i]->s, 
 										 getNombre(p_afnd->transiciones[i]->e_fin),
 										 p_afnd->transiciones[i]->id);
@@ -203,11 +236,27 @@ void AFNDImprimeTransiciones(FILE *fd, AFND *p_afnd){
 }
 
 void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd){
-
+	int i = 0;
+	fprintf(fd, "[(%d)", p_afnd->i_cadena);
+	for (i = 0; i < p_afnd->i_cadena; i++) {
+		fprintf(fd, " %c", p_afnd->cadena_entrada[i]);
+	}
+	fprintf(fd, "]\n");
 }
 
 AFND * AFNDInicializaEstado (AFND * p_afnd){
-
+	int i = 0;
+	for (i=0; i<p_afnd->num_eactuales; i++){
+		p_afnd->estados_actuales[i] = NULL;
+	}
+	p_afnd->num_eactuales = 0;
+	for (i = 0; i<p_afnd->num_estados; i++){
+		if (getTipo(p_afnd->estados[i]) == INICIAL
+		 || getTipo(p_afnd->estados[i]) == INICIAL_Y_FINAL){
+			p_afnd->estados_actuales[p_afnd->num_eactuales] = p_afnd->estados[i];
+			p_afnd->num_eactuales++;
+		}
+	}
 	return p_afnd;
 }
 
@@ -216,6 +265,14 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
 }
 
 void AFNDTransita(AFND * p_afnd){
+	/*
+	int i = 0;
+	int j = 0;
+	for (i=0; i<p_afnd->num_eactuales; i++) {
+
+	}
+	*/
+
 
 }
 
