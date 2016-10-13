@@ -54,11 +54,11 @@ estado.o: estado.c
 clean:
 	rm -rf *.o *.core *\.a *\.salida *\.out $(EJECUTABLES)
 
-test1:
+test_practica:
 	./P1
 
 valgrind_test:
-	valgrind --leak-check=full --show-leak-kinds=all ./P1
+	valgrind --leak-check=full --show-leak-kinds=all ./testP1
 #==================================================================================
 #
 #
