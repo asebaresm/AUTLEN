@@ -12,7 +12,8 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 	}	
 	
 	afnd = (AFND*) malloc (sizeof(AFND));
-	afnd->nombre = (char*) malloc (strlen(nombre));
+	afnd->nombre = (char*) malloc (strlen(nombre) + 1);
+	strcpy(afnd->nombre, nombre);
 	afnd->num_estados = num_estados;
 	afnd->i_estados = 0;
 	afnd->i_simbolos = 0;
@@ -32,9 +33,8 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 }
 
 void AFNDElimina(AFND * p_afnd){
-    liberarEstadosAFND(p_afnd);
-    liberarTransicionesANFD(p_afnd);
-
+        liberarEstadosAFND(p_afnd);
+        liberarTransicionesANFD(p_afnd);
 	free(p_afnd->estados_actuales);
 	free(p_afnd->nombre);
 	free(p_afnd->cadena_entrada);
@@ -66,6 +66,8 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
 	fprintf(fd, "\tnum_estados = %d\n\n", p_afnd->num_estados);
 	AFNDImprimeConjuntoEstadosTotal(fd, p_afnd);
 	fprintf(fd, "\tnum_estados = %d\n\n", p_afnd->num_estados);
+	
+	AFNDImprimeTransiciones(fd, p_afnd);
 	
 }
 
@@ -113,7 +115,7 @@ BOOL isSimbolo(AFND *p_afnd, char *id){
 BOOL isEstado(AFND *p_afnd, char *id){
 	int i=0;	
 	for (i=0; i<p_afnd->num_estados; i++){
-		/*printf("\ncomparando [%s] con [%s]\n", p_afnd->estados[i]->n, id);*/
+
 		if (strcmp(p_afnd->estados[i]->n, id) == 0){
 			return TRUE;
 		}
@@ -247,7 +249,7 @@ void AFNDImprimeConjuntoEstadosTotal(FILE * fd, AFND * p_afnd){
 			fprintf(fd, "->");
 		}
 
-		fprintf(fd, "%s", getNombre(p_afnd->estados_actuales[i]));
+		fprintf(fd, "%s", getNombre(p_afnd->estados[i]));
 
 		if (getTipo(p_afnd->estados[i]) == FINAL
 		 || getTipo(p_afnd->estados[i]) == INICIAL_Y_FINAL){
@@ -260,27 +262,18 @@ void AFNDImprimeConjuntoEstadosTotal(FILE * fd, AFND * p_afnd){
 }
 
 void AFNDImprimeTransiciones(FILE *fd, AFND *p_afnd){
-	
 	/*JAJAJAJAJAJÀJÀJAÀJAÀJAAAÀJAAÀJÀSJÀJAAÀJÀJÀJAAAAÀJAÀJÀJÀJA Xdd	*/
-	/*int i = 0;
+	int i = 0;
 	int j = 0;
 	int k = 0;
 	fprintf(fd,"\nFuncion de Transicion = {\n");
 	for (i = 0;i < p_afnd->num_estados; i++){
 		for (j = 0; j < p_afnd->num_simbolos; j++){
-			fprintf(fd, "\tf(%s,%c)={", p_afnd->estados[i], p_afnd->simbolos[j]);
-			for (k = 0; 	
+			fprintf(fd, "\tf(%s,%c)={\n", getNombre(p_afnd->estados[i]), p_afnd->simbolos[j]);
+			/*for (k = 0; */	
 		}
-	}*/
-	
-
-
-	for(i=0; i<p_afnd->num_trans; i++){
-		fprintf(fd,"\n\t(%s|%s|%s) - id:%s", getNombre(p_afnd->transiciones[i]->e_ini), 
-										 p_afnd->transiciones[i]->s, 
-										 getNombre(p_afnd->transiciones[i]->e_fin),
-										 p_afnd->transiciones[i]->id);
 	}
+
 }
 
 void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd){
@@ -327,7 +320,7 @@ void AFNDTransita(AFND * p_afnd){
 	int k = 0;
 	Estado *p_echeck = NULL;
 	Transicion *p_tcheck = NULL;
-    Estado **aux = (Estado **) malloc(p_afnd->num_estados * sizeof(Estado *));
+	Estado **aux = (Estado **) malloc(p_afnd->num_estados * sizeof(Estado *));
 	
 	for (i = 0; i< p_afnd->num_eactuales; i++) {
 		p_echeck = p_afnd->estados_actuales[i];
@@ -344,10 +337,7 @@ void AFNDTransita(AFND * p_afnd){
 
 	p_afnd->num_eactuales = k;
 
-	for (i = 0; i< p_afnd->num_estados; i++) {
-		p_afnd->estados_actuales[i] = aux[i];
-		/*memcpy(p_afnd->estados_actuales, aux, num_estados * sizeof(Estado *))*/
-	}
+	memcpy(p_afnd->estados_actuales, aux, p_afnd->num_estados * sizeof(Estado *));
 	free(aux);
 }
 

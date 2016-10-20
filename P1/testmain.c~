@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
     AFNDInsertaTransicion(p_afnd, "q0", "1", "q1");
     AFNDInsertaTransicion(p_afnd, "q1", "1", "qf");
 
-    AFNDImprime/*Transiciones*/(stdout, p_afnd);
+    AFNDImprimeTransiciones(stdout, p_afnd);
     printf("\n");
 
 
