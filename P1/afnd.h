@@ -86,4 +86,5 @@ Estado * getFinalTrans(AFND *p_afnd, int idx);
 
 Estado *getEstadoAFND(AFND *p_afnd, char *id);
 
+BOOL findEstado(Estado **lista_e, int tam, Estado *e);
 #endif

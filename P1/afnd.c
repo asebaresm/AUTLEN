@@ -327,3 +327,14 @@ Estado * getFinalTrans(AFND *p_afnd, int idx){
 	}
 	return getFinal(p_afnd->transiciones[i]);
 }
+
+BOOL findEstado(Estado **lista_e, int tam, Estado *e){
+    int i = 0;
+    for(i=0; i<tam;i++){
+        if(equalEstado(lista_e[i],e) == TRUE){
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+

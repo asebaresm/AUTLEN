@@ -19,3 +19,6 @@ TIPO getTipo(Estado *estado);
 char * tipoPrinteable(TIPO t, char *str);
 BOOL equalEstado(char * str);
 #endif
+
+
+

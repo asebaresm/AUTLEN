@@ -17,4 +17,10 @@ void liberarEstado(Estado *estado);
 char * getNombre(Estado *estado);
 TIPO getTipo(Estado *estado);
 char * tipoPrinteable(TIPO t, char *str);
+<<<<<<< HEAD
+BOOL equalEstado(char * str);
 #endif
+=======
+
+#endif
+>>>>>>> 5650de5d93050f5c72fd9562ab3e6e3f09e18176
