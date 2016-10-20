@@ -6,6 +6,7 @@
 #include <string.h>
 
 typedef enum {INICIAL, NORMAL, FINAL, INICIAL_Y_FINAL} TIPO;
+typedef enum { FALSE = 0, TRUE = 1} BOOL;
 
 typedef struct Estados {
 	char * n;
@@ -17,7 +18,7 @@ void liberarEstado(Estado *estado);
 char * getNombre(Estado *estado);
 TIPO getTipo(Estado *estado);
 char * tipoPrinteable(TIPO t, char *str);
-BOOL equalEstado(char * str);
+BOOL equalEstado(Estado * e1, Estado *e2);
 #endif
 
 
