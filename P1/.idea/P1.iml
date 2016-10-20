@@ -2,14 +2,7 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/afnd.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/estado.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/estado.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/transicion.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/testmain.c" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/afnd.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/transicion.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">

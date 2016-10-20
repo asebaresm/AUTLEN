@@ -51,7 +51,7 @@ char * tipoPrinteable(TIPO t, char *str){
 }
 
 BOOL equalEstado(Estado *e1,Estado *e2){
-	if (strcmp (getNombre(e1), getNombre(e2) == 0) {
+	if (strcmp (getNombre(e1), getNombre(e2)) == 0 ){
 		return TRUE;
 	}
 	return FALSE;

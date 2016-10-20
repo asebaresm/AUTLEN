@@ -272,8 +272,12 @@ AFND * AFNDInicializaEstado (AFND * p_afnd){
 void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
 	int i = 0;
 	for (i = 0; i < strlen(p_afnd->cadena_entrada); i++) {
+        AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
 		AFNDTransita(p_afnd);
 		p_afnd->i_cadena--;
+        if(p_afnd->i_cadena == 0) {
+            AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+        }
 	}
 }
 
@@ -281,20 +285,18 @@ void AFNDTransita(AFND * p_afnd){
 
 	int i = 0;
 	int j = 0;
-	int k = 0;	
-	Estado **aux = (Estado **) malloc(num_estados * sizeof(Estado *));
-	aux = NULL;
+	int k = 0;
 	Estado *p_echeck = NULL;
 	Transicion *p_tcheck = NULL;
-	
+    Estado **aux = (Estado **) malloc(p_afnd->num_estados * sizeof(Estado *));
 	
 	for (i = 0; i< p_afnd->num_eactuales; i++) {
 		p_echeck = p_afnd->estados_actuales[i];
 		for (j = 0; j < p_afnd->num_trans; j++) {
 			p_tcheck = p_afnd->transiciones[j];
-			if (getIni(p_tcheck) == p_echeck 
-			    && p_afnd->cadena_entrada[strlen(p_afnd->cadena_entrada) - p_afnd->i_cadena] == getSimbolo(p_tcheck) 
-			    && findEstado(aux, k, getFinal(p_tcheck)) == FALSE) {
+			if ((getIni(p_tcheck) == p_echeck)
+			    && (p_afnd->cadena_entrada[strlen(p_afnd->cadena_entrada) - p_afnd->i_cadena] == getSimbolo(p_tcheck)[0])
+			    && (findEstado(aux, k, getFinal(p_tcheck)) == FALSE)) {
 				aux[k] = getFinal(p_tcheck);
 				k++;
 			}

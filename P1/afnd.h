@@ -15,8 +15,6 @@
 # define DEBUG_PRINT(x) do {} while (0)
 #endif
 
-typedef enum { FALSE = 0, TRUE = 1} BOOL;
-
 typedef struct Afnds {
 	char * nombre;
 	int num_estados;

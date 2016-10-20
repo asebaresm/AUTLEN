@@ -56,6 +56,8 @@ int main(int argc, char ** argv)
     AFNDInicializaEstado (p_afnd);
     AFNDImprimeConjuntoEstadosActual(stdout, p_afnd);
 
+    printf("\n=======NOS VAMOS DE EXCURSION=========");
+    AFNDProcesaEntrada(stdout, p_afnd);
     
 /* SE MUESTRA EL AFND DEFINIDO */
     /*fprintf(stdout,"\n****************** AFND *********************\n");
