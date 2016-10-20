@@ -270,6 +270,7 @@ AFND * AFNDInicializaEstado (AFND * p_afnd){
 }
 
 void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
+	char * p_ccheck = p_afnd->cadena_entrada;
 	int i = 0;
 	for (i = 0; i < strlen(p_afnd->cadena_entrada); i++) {
 		AFNDTransita(p_afnd);
