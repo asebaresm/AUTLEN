@@ -51,8 +51,6 @@ int main(int argc, char ** argv)
 /* SE ESTABLECE COMO ESTADO ACTUAL DEL AUTÓMATA EL INICIAL */
 
     AFNDInicializaEstado (p_afnd);
-    AFNDImprimeConjuntoEstadosTotal(stdout, p_afnd);
-    AFNDImprimeConjuntoEstadosActual(stdout, p_afnd);
 
 /* SE MUESTRA LA CADENA ACTUAL */
 

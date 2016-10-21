@@ -28,18 +28,19 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 	afnd->transiciones = NULL;
 	afnd->estados_actuales = (Estado **) malloc(num_estados * sizeof(Estado *));
 	afnd->num_eactuales = 0;
-	DEBUG_PRINT(("AFND nuevo creado\n"));
 	return afnd;
 }
 
 void AFNDElimina(AFND * p_afnd){
-        liberarEstadosAFND(p_afnd);
-        liberarTransicionesANFD(p_afnd);
+    liberarEstadosAFND(p_afnd);
+    liberarTransicionesANFD(p_afnd);
 	free(p_afnd->estados_actuales);
 	free(p_afnd->nombre);
-	free(p_afnd->cadena_entrada);
+	if (p_afnd->cadena_entrada != NULL){
+		free(p_afnd->cadena_entrada);
+		
+	}
 	free(p_afnd->simbolos);
-
 	free(p_afnd);
 }
 
@@ -65,15 +66,13 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
 	AFNDImprimeSimbolo(fd, p_afnd);
 	fprintf(fd, "\tnum_estados = %d\n\n", p_afnd->num_estados);
 	AFNDImprimeConjuntoEstadosTotal(fd, p_afnd);
-	fprintf(fd, "\tnum_estados = %d\n\n", p_afnd->num_estados);
-	
 	AFNDImprimeTransiciones(fd, p_afnd);
-	
+	fprintf(fd, "}\n");
 }
 
 void AFNDImprimeSimbolo(FILE * fd, AFND* p_afnd){
 	int i = 0;	
-	fprintf(fd, "A={ ");
+	fprintf(fd, "\tA={ ");
 	for (i = 0; i < p_afnd->num_simbolos; i++) {
 		fprintf(fd, "%c ", p_afnd->simbolos[i]);
 	}
@@ -88,7 +87,6 @@ AFND * AFNDInsertaSimbolo(AFND * p_afnd, char * simbolo){
 	
 	p_afnd->simbolos[p_afnd->i_simbolos] = *simbolo;
 	p_afnd->i_simbolos++;
-    DEBUG_PRINT(("Simbolo nuevo creado\n"));
 	
 	return p_afnd;
 }
@@ -100,7 +98,6 @@ AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo){
 
 	p_afnd->estados[p_afnd->i_estados] = nuevoEstado(nombre, tipo);
 	p_afnd->i_estados++;
-    DEBUG_PRINT(("Estado nuevo creado\n"));
 	return p_afnd;
 }
 
@@ -159,7 +156,7 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd,
 	char *id = NULL;
 	id = buildTransId(nombre_estado_i, nombre_simbolo_entrada, nombre_estado_f);
 
-	/*ret NULL si los estados existen OR la transicion ya existe en el AFND*/
+	/*ret NULL si los estados no existen OR la transicion ya existe en el AFND*/
 	if (isEstado(p_afnd, nombre_estado_i) == FALSE 
 		|| isEstado(p_afnd, nombre_estado_f) == FALSE 
 		|| isSimbolo(p_afnd, nombre_simbolo_entrada) == FALSE
@@ -242,7 +239,7 @@ void AFNDImprimeConjuntoEstadosActual(FILE * fd, AFND * p_afnd){
 
 void AFNDImprimeConjuntoEstadosTotal(FILE * fd, AFND * p_afnd){
 	int i = 0;
-	fprintf(fd, "\nQ={");
+	fprintf(fd, "\n\tQ={");
 	for (i = 0; i<p_afnd->num_estados; i++){
 		if (getTipo(p_afnd->estados[i]) == INICIAL
 		 || getTipo(p_afnd->estados[i]) == INICIAL_Y_FINAL){
@@ -266,21 +263,31 @@ void AFNDImprimeTransiciones(FILE *fd, AFND *p_afnd){
 	int i = 0;
 	int j = 0;
 	int k = 0;
-	fprintf(fd,"\nFuncion de Transicion = {\n");
+	char *aux;
+	fprintf(fd,"\n\tFuncion de Transicion = {\n");
 	for (i = 0;i < p_afnd->num_estados; i++){
 		for (j = 0; j < p_afnd->num_simbolos; j++){
-			fprintf(fd, "\tf(%s,%c)={\n", getNombre(p_afnd->estados[i]), p_afnd->simbolos[j]);
-			/*for (k = 0; */	
+			fprintf(fd, "\t\tf(%s,%c)={ ", getNombre(p_afnd->estados[i]), p_afnd->simbolos[j]);
+			for (k = 0; k < p_afnd->num_trans; k++) {
+				aux = getSimbolo(p_afnd->transiciones[k]);
+				if (getIni(p_afnd->transiciones[k]) == p_afnd->estados[i]
+					&& aux[0] == p_afnd->simbolos[j]){
+					fprintf(fd, "%s ", getNombre(getFinal(p_afnd->transiciones[k])));
+				}
+			}
+			fprintf(fd, "}\n");
 		}
 	}
-
+	fprintf(fd, "\t}\n");
 }
 
 void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd){
 	int i = 0;
 	fprintf(fd, "[(%d)", p_afnd->i_cadena);
-	for (i = strlen(p_afnd->cadena_entrada) - p_afnd->i_cadena; i < strlen(p_afnd->cadena_entrada); i++) {
-		fprintf(fd, " %c", p_afnd->cadena_entrada[i]);
+	if (p_afnd->i_cadena != 0){
+		for (i = strlen(p_afnd->cadena_entrada) - p_afnd->i_cadena; i < strlen(p_afnd->cadena_entrada); i++) {
+			fprintf(fd, " %c", p_afnd->cadena_entrada[i]);
+		}
 	}
 	fprintf(fd, "]\n");
 }
@@ -303,12 +310,17 @@ AFND * AFNDInicializaEstado (AFND * p_afnd){
 
 void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
 	int i = 0;
-	for (i = 0; i < strlen(p_afnd->cadena_entrada); i++) {
+	int j = strlen(p_afnd->cadena_entrada);
+	for (i = 0; i < j; i++) {
         AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+        AFNDImprimeCadenaActual(fd, p_afnd);
 		AFNDTransita(p_afnd);
 		p_afnd->i_cadena--;
         if(p_afnd->i_cadena == 0) {
             AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+            AFNDImprimeCadenaActual(fd, p_afnd);
+            free(p_afnd->cadena_entrada);
+            p_afnd->cadena_entrada = NULL;
         }
 	}
 }
