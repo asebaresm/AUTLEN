@@ -74,6 +74,8 @@ void AFNDImprimeTransiciones(FILE *fd, AFND *p_afnd);
 
 void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd);
 
+AFND * AFNDInicializaCadenaActual(AFND * p_afnd);
+
 AFND * AFNDInicializaEstado (AFND * p_afnd);
 
 void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd);

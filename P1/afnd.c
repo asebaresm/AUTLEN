@@ -172,7 +172,7 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd,
 	}
 	p_afnd->num_trans++;
 
-	/*TO-DO: 
+	/*TO-DO (opcional, si reusamos el automata): 
 		-empaquetar en funcion nuevaTransicion()
 		-revisar secuencia de mallocs (simplificar)
 		-comprobaciones de ret NULLs*/
@@ -259,7 +259,6 @@ void AFNDImprimeConjuntoEstadosTotal(FILE * fd, AFND * p_afnd){
 }
 
 void AFNDImprimeTransiciones(FILE *fd, AFND *p_afnd){
-	/*JAJAJAJAJAJÀJÀJAÀJAÀJAAAÀJAAÀJÀSJÀJAAÀJÀJÀJAAAAÀJAÀJÀJÀJA Xdd	*/
 	int i = 0;
 	int j = 0;
 	int k = 0;
@@ -292,6 +291,10 @@ void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd){
 	fprintf(fd, "]\n");
 }
 
+AFND * AFNDInicializaCadenaActual(AFND * p_afnd){
+	return p_afnd;
+}
+
 AFND * AFNDInicializaEstado (AFND * p_afnd){
 	int i = 0;
 	for (i=0; i<p_afnd->num_eactuales; i++){
@@ -316,8 +319,8 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
 	}
 	j = strlen(p_afnd->cadena_entrada);
 	for (i = 0; i < j; i++) {
-        	AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
-        	AFNDImprimeCadenaActual(fd, p_afnd);
+        AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+        AFNDImprimeCadenaActual(fd, p_afnd);
 		AFNDTransita(p_afnd);
 		p_afnd->i_cadena--;
         	if(p_afnd->i_cadena == 0) {
@@ -353,6 +356,7 @@ void AFNDTransita(AFND * p_afnd){
 
 	p_afnd->num_eactuales = k;
 
+	/*Copiamos en bloque al puntero del AFND el nuevo "array" de estados actuales*/
 	memcpy(p_afnd->estados_actuales, aux, p_afnd->num_estados * sizeof(Estado *));
 	free(aux);
 }
