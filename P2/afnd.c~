@@ -28,7 +28,6 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 	afnd->transiciones = NULL;
 	afnd->estados_actuales = (Estado **) malloc(num_estados * sizeof(Estado *));
 	afnd->num_eactuales = 0;
-	afnd->lamdatrix = iniMatrix(num_estados);
 	return afnd;
 }
 
@@ -42,7 +41,6 @@ void AFNDElimina(AFND * p_afnd){
 		
 	}
 	free(p_afnd->simbolos);
-	liberaMatrix(p_afnd->lambdatrix);
 	free(p_afnd);
 }
 
