@@ -310,18 +310,22 @@ AFND * AFNDInicializaEstado (AFND * p_afnd){
 
 void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
 	int i = 0;
-	int j = strlen(p_afnd->cadena_entrada);
+	int j;
+	if (p_afnd->cadena_entrada == NULL){
+		return;
+	}
+	j = strlen(p_afnd->cadena_entrada);
 	for (i = 0; i < j; i++) {
-        AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
-        AFNDImprimeCadenaActual(fd, p_afnd);
+        	AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+        	AFNDImprimeCadenaActual(fd, p_afnd);
 		AFNDTransita(p_afnd);
 		p_afnd->i_cadena--;
-        if(p_afnd->i_cadena == 0) {
-            AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
-            AFNDImprimeCadenaActual(fd, p_afnd);
-            free(p_afnd->cadena_entrada);
-            p_afnd->cadena_entrada = NULL;
-        }
+        	if(p_afnd->i_cadena == 0) {
+            		AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+            		AFNDImprimeCadenaActual(fd, p_afnd);
+            		free(p_afnd->cadena_entrada);
+            		p_afnd->cadena_entrada = NULL;
+        	}	
 	}
 }
 
