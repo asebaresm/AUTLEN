@@ -13,8 +13,8 @@ CFLAGS=-g -Wall
 # Directorio en el que se encuentra el proyecto
 DIR=P1
 # Ejecutables
-EJECUTABLES=P1 pr_afnd_s3
-# eliminado 'testP1' para la version de entrega
+EJECUTABLES=P1 testP1 pr_afnd_s3
+
 #==================================================================================
 # Construccion de los ejecutables
 #==================================================================================
@@ -75,8 +75,8 @@ valgrind_test: P1
 valgrind_test_pr_afnd_s3: pr_afnd_s3
 	valgrind --leak-check=full --show-leak-kinds=all ./pr_afnd_s3
 
-#valgrind_testP1: testP1
-#	valgrind --leak-check=full --show-leak-kinds=all ./testP1
+valgrind_testP1: testP1
+	valgrind --leak-check=full --show-leak-kinds=all ./testP1
 #==================================================================================
 #
 #
