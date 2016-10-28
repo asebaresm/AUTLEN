@@ -11,11 +11,13 @@ typedef enum { FALSE = 0, TRUE = 1} BOOL;
 typedef struct Estados {
 	char * n;
 	TIPO t;
+	int id;
 } Estado;
 
-Estado * nuevoEstado (char * nombre, TIPO tipo);
+Estado * nuevoEstado(char * nombre, TIPO tipo, int n);
 void liberarEstado(Estado *estado);
 char * getNombre(Estado *estado);
+int getId(Estado *estado);
 TIPO getTipo(Estado *estado);
 char * tipoPrinteable(TIPO t, char *str);
 BOOL equalEstado(Estado * e1, Estado *e2);

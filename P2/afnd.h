@@ -7,6 +7,7 @@
 
 #include "estado.h"
 #include "transicion.h"
+#include "relaciones.h"
 
 #define DEBUG
 #ifdef DEBUG
@@ -30,7 +31,7 @@ typedef struct Afnds {
 	Transicion **transiciones;
 	Estado **estados_actuales;
 	int num_eactuales;
-	Relaciones *lambdatriz;
+	Relaciones *lambdatrix;
 } AFND;
 
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
@@ -96,5 +97,7 @@ AFND * AFNDInsertaLTransicion(AFND * p_afnd,
        			      char * nombre_estado_f );
 
 AFND * AFNDCierraLTransicion (AFND * p_afnd);
+
+AFND * AFNDImprimeMatrix(FILE * fd, AFND *p_afnd);
 
 #endif

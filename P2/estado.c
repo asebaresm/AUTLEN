@@ -6,7 +6,7 @@
 #include "estado.h"
 
 
-Estado * nuevoEstado(char * nombre, TIPO tipo){
+Estado * nuevoEstado(char * nombre, TIPO tipo, int n){
 	Estado * e = NULL;
 	if (nombre == NULL) {
 		return NULL;
@@ -16,6 +16,7 @@ Estado * nuevoEstado(char * nombre, TIPO tipo){
 
 	e->t = tipo;
 	strcpy(e->n, nombre);
+	e->id = n;
 	return e;
 }
 
@@ -26,6 +27,10 @@ void liberarEstado(Estado *estado){
 
 char *getNombre(Estado *e){
 	return e->n;
+}
+
+int getId(Estado *e){
+	return e->id;
 }
 
 TIPO getTipo(Estado *e){

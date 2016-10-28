@@ -11,9 +11,11 @@ Relaciones *iniMatrix(int t){
 	m->matrix = (int **) malloc(t * sizeof(int *));
 	for (i = 0; i<t; i++){
 		m->matrix[i] = (int *) malloc(t * sizeof(int));
+		memset(m->matrix[i], 0, (t * sizeof(int)));
 	}
 	m->tam = t;
 	if (m!= NULL){
+
 		return m;
 	} else {
 		return NULL;
@@ -48,15 +50,23 @@ void cierreTransit(Relaciones *m){
 	int i = 0;
 	int j = 0;
 	int k = 0;
-	for (i = 0; i < m->tam; i++){
+	for (i = 0; i < m->tam; i++) {
 		for (j = 0; j < m->tam; j++){
 			if (m->matrix[i][j] == 1) {
 				for (k = 0; k < m->tam; k++){
-					if (m->matrix[k][i] == 1{
+					if (m->matrix[k][i] == 1) {
 						insertaL(m, k, j);
 					}
 				} 	
 			}
 		}	
 	}
+}
+
+int getTam(Relaciones *m){
+	return m->tam;
+}
+
+int getMatrixData(Relaciones *m, int r, int c){
+	return m->matrix[r][c];
 }

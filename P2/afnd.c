@@ -28,7 +28,7 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 	afnd->transiciones = NULL;
 	afnd->estados_actuales = (Estado **) malloc(num_estados * sizeof(Estado *));
 	afnd->num_eactuales = 0;
-	afnd->lamdatrix = iniMatrix(num_estados);
+	afnd->lambdatrix = iniMatrix(num_estados);
 	return afnd;
 }
 
@@ -68,6 +68,7 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
 	AFNDImprimeSimbolo(fd, p_afnd);
 	fprintf(fd, "\tnum_estados = %d\n\n", p_afnd->num_estados);
 	AFNDImprimeConjuntoEstadosTotal(fd, p_afnd);
+	AFNDImprimeMatrix(fd, p_afnd);
 	AFNDImprimeTransiciones(fd, p_afnd);
 	fprintf(fd, "}\n");
 }
@@ -98,7 +99,7 @@ AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo){
 		return NULL;	
 	}
 
-	p_afnd->estados[p_afnd->i_estados] = nuevoEstado(nombre, tipo);
+	p_afnd->estados[p_afnd->i_estados] = nuevoEstado(nombre, tipo, p_afnd->i_estados);
 	p_afnd->i_estados++;
 	return p_afnd;
 }
@@ -402,9 +403,45 @@ AFND * AFNDInsertaLTransicion(AFND * p_afnd,
        			      char * nombre_estado_i, 
        			      char * nombre_estado_f ){
 	
+	int id_i, id_f;
+	if (isEstado(p_afnd, nombre_estado_i) == FALSE 
+		|| isEstado(p_afnd, nombre_estado_f) == FALSE) {
+		return NULL;
+	}
+	id_i = getId(getEstadoAFND(p_afnd, nombre_estado_i));
+	id_f = getId(getEstadoAFND(p_afnd, nombre_estado_f));
+	insertaL(p_afnd->lambdatrix, id_i, id_f);
+	return p_afnd;
 }
 
 AFND * AFNDCierraLTransicion (AFND * p_afnd){
+	cierreReflex(p_afnd->lambdatrix);
+	cierreTransit(p_afnd->lambdatrix);
+	return p_afnd;
+}
 
+AFND * AFNDImprimeMatrix(FILE * fd, AFND* p_afnd){
+	int i = 0;
+	int j = 0;
+	int t;
+	if (p_afnd == NULL){
+		return NULL;
+	}
+	t = getTam(p_afnd->lambdatrix);
+	fprintf(fd, "\tRL++*={\n\n\t");
+	for (i = 0; i < t; i++){
+		fprintf(fd, "\t[%d]", i);
+	}
+	fprintf(fd, "\n");
+
+	for (i = 0; i < t; i++){
+		fprintf(fd, "\t[%d]", i);
+		for (j = 0; j < t; j++){			
+			fprintf(fd, "\t%d", getMatrixData(p_afnd->lambdatrix, i, j));
+		}
+		fprintf(fd, "\n");
+	}
+	fprintf(fd, "}\n");
+	return p_afnd;
 }
 

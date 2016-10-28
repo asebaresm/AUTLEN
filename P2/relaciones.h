@@ -20,14 +20,17 @@ typedef struct Rels {
 	int tam;
 } Relaciones;
 
-Relaciones **iniMatrix(int t);
+Relaciones *iniMatrix(int t);
 
-void insertaL(int row, int col);
+void insertaL(Relaciones *m, int row, int col);
 
-void liberaMatrix(Relaciones m);
+void liberaMatrix(Relaciones *m);
 
-void cierreReflex(Relaciones m);
+void cierreReflex(Relaciones *m);
 
-void cierreTransit(Relaciones m);
+void cierreTransit(Relaciones *m);
 
+int getTam(Relaciones *m);
+
+int getMatrixData(Relaciones *m, int r, int c);
 #endif
