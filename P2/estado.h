@@ -21,6 +21,9 @@ int getId(Estado *estado);
 TIPO getTipo(Estado *estado);
 char * tipoPrinteable(TIPO t, char *str);
 BOOL equalEstado(Estado * e1, Estado *e2);
+BOOL findEstado(Estado **lista_e, int tam, Estado *e);
+Estado * getEstadoPorId(Estado **lista_e, int tam, int id);
+void appendE(Estado **lista_e, int *tam, Estado *e);
 #endif
 
 

@@ -331,6 +331,7 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
         AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
         AFNDImprimeCadenaActual(fd, p_afnd);
 		AFNDTransita(p_afnd);
+		AFNDTransitaLambdas(p_afnd);
 		p_afnd->i_cadena--;
         	if(p_afnd->i_cadena == 0) {
             		AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
@@ -350,7 +351,7 @@ void AFNDTransita(AFND * p_afnd){
 	Estado *p_echeck = NULL;
 	Transicion *p_tcheck = NULL;
 	Estado **aux = (Estado **) malloc(p_afnd->num_estados * sizeof(Estado *));
-	
+	printf("\np_afnd->num_eactuales=%d", p_afnd->num_eactuales);
 	for (i = 0; i< p_afnd->num_eactuales; i++) {
 		p_echeck = p_afnd->estados_actuales[i];
 		for (j = 0; j < p_afnd->num_trans; j++) {
@@ -363,12 +364,28 @@ void AFNDTransita(AFND * p_afnd){
 			}
 		}
 	}
-
 	p_afnd->num_eactuales = k;
-
 	/*Copiamos en bloque al puntero del AFND el nuevo "array" de estados actuales*/
 	memcpy(p_afnd->estados_actuales, aux, p_afnd->num_estados * sizeof(Estado *));
 	free(aux);
+}
+
+void AFNDTransitaLambdas(AFND *p_afnd){
+	int i = 0;
+	int j = 0;
+	int num_ea = p_afnd->num_eactuales;
+	Estado **ea = p_afnd->estados_actuales;
+	/*printf("\nsizeof(ea)=%d\nnum_ea=%d", (int)sizeof(ea),p_afnd->num_eactuales);*/
+	for(i = 0; i<num_ea; i++){
+		for(j=0; j<getTam(p_afnd->lambdatrix); j++){
+			if((getMatrixData(p_afnd->lambdatrix, getId(ea[i]), j)==1) 
+			  && (findEstado(ea, num_ea, ea[i])!=TRUE)){
+				/*appendE(ea, &p_anfd->num_eactuales, getEstadoPorId(ea, num_ea, j))*/
+				p_afnd->estados_actuales[p_afnd->num_eactuales] = getEstadoPorId(ea, num_ea, j);
+				p_afnd->num_eactuales++;
+			}
+		}
+	}
 }
 
 /*Devuelve el estado inicial de uan transicion a partir de su indice*/
@@ -389,15 +406,6 @@ Estado * getFinalTrans(AFND *p_afnd, int idx){
 	return getFinal(p_afnd->transiciones[i]);
 }
 
-BOOL findEstado(Estado **lista_e, int tam, Estado *e){
-    int i = 0;
-    for(i=0; i<tam;i++){
-        if(equalEstado(lista_e[i],e) == TRUE){
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
 
 AFND * AFNDInsertaLTransicion(AFND * p_afnd, 
        			      char * nombre_estado_i, 

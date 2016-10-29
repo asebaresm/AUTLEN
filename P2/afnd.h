@@ -84,13 +84,13 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd);
 
 void AFNDTransita(AFND * p_afnd);
 
+void AFNDTransitaLambdas(AFND *p_afnd);
+
 Estado * getIniTrans(AFND *p_afnd, int idx);
 
 Estado * getFinalTrans(AFND *p_afnd, int idx);
 
 Estado *getEstadoAFND(AFND *p_afnd, char *id);
-
-BOOL findEstado(Estado **lista_e, int tam, Estado *e);
 
 AFND * AFNDInsertaLTransicion(AFND * p_afnd, 
        			      char * nombre_estado_i, 

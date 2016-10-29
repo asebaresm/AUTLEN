@@ -61,3 +61,28 @@ BOOL equalEstado(Estado *e1,Estado *e2){
 	}
 	return FALSE;
 }
+
+BOOL findEstado(Estado **lista_e, int tam, Estado *e){
+    int i = 0;
+    for(i=0; i<tam;i++){
+        if(equalEstado(lista_e[i],e) == TRUE){
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+Estado * getEstadoPorId(Estado **lista_e, int tam, int id){
+	int i=0;
+	for(i=0; i<tam; i++){
+		if(getId(lista_e[i]) == id)
+			return lista_e[i];
+	}
+	return NULL;
+}
+
+void appendE(Estado **lista_e, int *tam, Estado *e){
+	lista_e[*tam] = e;
+	*tam += 1;
+	return;
+}
