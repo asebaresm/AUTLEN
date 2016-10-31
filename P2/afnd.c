@@ -327,17 +327,19 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
 		return;
 	}
 	j = strlen(p_afnd->cadena_entrada);
+	AFNDTransitaLambdas(p_afnd);
 	for (i = 0; i < j; i++) {
         AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
         AFNDImprimeCadenaActual(fd, p_afnd);
+        if (p_afnd->num_eactuales == 0){
+        	break;
+        }
 		AFNDTransita(p_afnd);
 		AFNDTransitaLambdas(p_afnd);
 		p_afnd->i_cadena--;
         	if(p_afnd->i_cadena == 0) {
             		AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
             		AFNDImprimeCadenaActual(fd, p_afnd);
-            		/*free(p_afnd->cadena_entrada);
-            		p_afnd->cadena_entrada = NULL;*/
         	}	
 	}
 	p_afnd->i_cadena = k;
@@ -352,7 +354,7 @@ void AFNDTransita(AFND * p_afnd){
 	Transicion *p_tcheck = NULL;
 	Estado **aux = (Estado **) malloc(p_afnd->num_estados * sizeof(Estado *));
 	printf("\np_afnd->num_eactuales=%d", p_afnd->num_eactuales);
-	for (i = 0; i< p_afnd->num_eactuales; i++) {
+	for (i = 0; i < p_afnd->num_eactuales; i++) {
 		p_echeck = p_afnd->estados_actuales[i];
 		for (j = 0; j < p_afnd->num_trans; j++) {
 			p_tcheck = p_afnd->transiciones[j];
@@ -373,19 +375,23 @@ void AFNDTransita(AFND * p_afnd){
 void AFNDTransitaLambdas(AFND *p_afnd){
 	int i = 0;
 	int j = 0;
-	int num_ea = p_afnd->num_eactuales;
-	Estado **ea = p_afnd->estados_actuales;
-	/*printf("\nsizeof(ea)=%d\nnum_ea=%d", (int)sizeof(ea),p_afnd->num_eactuales);*/
-	for(i = 0; i<num_ea; i++){
-		for(j=0; j<getTam(p_afnd->lambdatrix); j++){
-			if((getMatrixData(p_afnd->lambdatrix, getId(ea[i]), j)==1) 
-			  && (findEstado(ea, num_ea, ea[i])!=TRUE)){
-				/*appendE(ea, &p_anfd->num_eactuales, getEstadoPorId(ea, num_ea, j))*/
-				p_afnd->estados_actuales[p_afnd->num_eactuales] = getEstadoPorId(ea, num_ea, j);
-				p_afnd->num_eactuales++;
+	int k = 0;
+	Estado *p_echeck = NULL;
+	Estado **aux = (Estado **) malloc(p_afnd->num_estados * sizeof(Estado *));
+	for (i = 0; i < p_afnd->num_eactuales; i++){
+		p_echeck = p_afnd->estados_actuales[i];
+		for (j = 0; j < getTam(p_afnd->lambdatrix); j++){
+			if (getMatrixData(p_afnd->lambdatrix, getId(p_echeck), j) == 1
+				&& (findEstado(aux, k, getEstadoPorId(p_afnd->estados, p_afnd->num_estados, j)) == FALSE)){
+				aux[k] = getEstadoPorId(p_afnd->estados, p_afnd->num_estados, j);
+				k++;
 			}
-		}
+		}		
 	}
+	p_afnd->num_eactuales = k;
+	/*Copiamos en bloque al puntero del AFND el nuevo "array" de estados actuales*/
+	memcpy(p_afnd->estados_actuales, aux, p_afnd->num_estados * sizeof(Estado *));
+	free(aux);
 }
 
 /*Devuelve el estado inicial de uan transicion a partir de su indice*/

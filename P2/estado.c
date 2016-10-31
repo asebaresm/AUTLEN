@@ -64,6 +64,9 @@ BOOL equalEstado(Estado *e1,Estado *e2){
 
 BOOL findEstado(Estado **lista_e, int tam, Estado *e){
     int i = 0;
+    if (lista_e == NULL || e == NULL){
+    	return FALSE;
+    }
     for(i=0; i<tam;i++){
         if(equalEstado(lista_e[i],e) == TRUE){
             return TRUE;
