@@ -64,7 +64,7 @@ void liberarTransicionesANFD(AFND *p_afnd){
 
 void AFNDImprime(FILE * fd, AFND* p_afnd){
 	fprintf(fd, "%s={\n", p_afnd->nombre);
-	fprintf(fd, "\tnum_simbolos = %d\n\n", p_afnd->num_simbolos);
+	fprintf(fd, "\tnum_simbolos = %d\n\n\n", p_afnd->num_simbolos);
 	AFNDImprimeSimbolo(fd, p_afnd);
 	fprintf(fd, "\tnum_estados = %d\n\n", p_afnd->num_estados);
 	AFNDImprimeConjuntoEstadosTotal(fd, p_afnd);
@@ -79,7 +79,7 @@ void AFNDImprimeSimbolo(FILE * fd, AFND* p_afnd){
 	for (i = 0; i < p_afnd->num_simbolos; i++) {
 		fprintf(fd, "%c ", p_afnd->simbolos[i]);
 	}
-	fprintf(fd, "}\n\n");	
+	fprintf(fd, "}\n\n\n");	
 }
 
 AFND * AFNDInsertaSimbolo(AFND * p_afnd, char * simbolo){		
@@ -353,7 +353,6 @@ void AFNDTransita(AFND * p_afnd){
 	Estado *p_echeck = NULL;
 	Transicion *p_tcheck = NULL;
 	Estado **aux = (Estado **) malloc(p_afnd->num_estados * sizeof(Estado *));
-	printf("\np_afnd->num_eactuales=%d", p_afnd->num_eactuales);
 	for (i = 0; i < p_afnd->num_eactuales; i++) {
 		p_echeck = p_afnd->estados_actuales[i];
 		for (j = 0; j < p_afnd->num_trans; j++) {
