@@ -84,18 +84,17 @@ void AFNDImprimeSimbolo(FILE * fd, AFND* p_afnd){
 
 AFND * AFNDInsertaSimbolo(AFND * p_afnd, char * simbolo){		
 	
-	if (p_afnd->i_simbolos == p_afnd->num_simbolos){
+	if (p_afnd->i_simbolos == p_afnd->num_simbolos || strchr (p_afnd->simbolos, simbolo[0]) != NULL){
 		return NULL;	
 	}
 	
 	p_afnd->simbolos[p_afnd->i_simbolos] = *simbolo;
-	p_afnd->i_simbolos++;
-	
+	p_afnd->i_simbolos++;	
 	return p_afnd;
 }
 
 AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo){
-	if (p_afnd->i_estados == p_afnd->num_estados){
+	if (p_afnd->i_estados == p_afnd->num_estados || isEstado(p_afnd, nombre) == TRUE){
 		return NULL;	
 	}
 
@@ -113,9 +112,8 @@ BOOL isSimbolo(AFND *p_afnd, char *id){
 }
 
 BOOL isEstado(AFND *p_afnd, char *id){
-	int i=0;	
-	for (i=0; i<p_afnd->num_estados; i++){
-
+	int i=0;
+	for (i=0; i<p_afnd->i_estados; i++){
 		if (strcmp(p_afnd->estados[i]->n, id) == 0){
 			return TRUE;
 		}
