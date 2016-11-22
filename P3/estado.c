@@ -37,6 +37,10 @@ TIPO getTipo(Estado *e){
 	return e->t;
 }
 
+void setTipo(Estado *e, TIPO t){
+	e->t = t;
+}
+
 char * tipoPrinteable(TIPO t, char *str){
 	switch(t){
 		case 0:

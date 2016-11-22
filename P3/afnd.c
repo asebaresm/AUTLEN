@@ -456,13 +456,59 @@ AFND * AFNDImprimeMatrix(FILE * fd, AFND* p_afnd){
 	return p_afnd;
 }
 
-AFND * AFND1ODeSimbolo( char * simbolo){}
+AFND * AFND1ODeSimbolo( char * simbolo){
+	AFND * afnd = NULL;
+	if (simbolo == NULL) {
+		return NULL;
+	}
+	if ((afnd = AFNDNuevo(strcat("anfd1o_", simbolo), 2, 1)) == NULL) {
+		return NULL;
+	}
+	AFNDInsertaSimbolo(afnd,simbolo[0]);
+	AFNDInsertaTransicion(afnd, "q0", simbolo[0], "q1");
+	return afnd;
+}
 
-AFND * AFND1ODeLambda(){}
+AFND * AFND1ODeLambda(){
+	AFND * afnd = NULL;
+	if ((afnd = AFNDNuevo("anfd1o_lambda", 2, 0)) == NULL) {
+		return NULL;
+	}
+	AFNDInsertaLTransicion(afnd, "q0", "q1");
+	return afnd;
+}
 
-AFND * AFND1ODeVacio(){}
+AFND * AFND1ODeVacio(){
+	AFND * afnd = NULL;
+	if ((afnd = AFNDNuevo("anfd1o_DeVacio", 2, 0)) == NULL) {
+		return NULL;
+	}
+	return afnd;
+}
 
-AFND * AFNDAAFND1O(AFND * p_afnd){}
+AFND * AFNDAAFND1O(AFND * p_afnd){
+	int i;
+	if (p_afnd == NULL) {
+		return NULL;
+	}
+
+	AFNDInsertaEstado(p_afnd,"q0_AFND10",INICIAL);
+    	AFNDInsertaEstado(p_afnd,"qf_AFND10",FINAL);
+
+	for (i=0; i<p_afnd->num_estados - 2; i++){
+		if (getTipo(p_afnd->estados[i]) == INICIAL){
+			AFNDInsertaLTransicion(afnd, "q0_AFND10", getNombre(p_afnd->estados[i]));
+			setTipo(p_afnd->estados[i], NORMAL);
+		} else 	if (getTipo(p_afnd->estados[i]) == FINAL){
+			AFNDInsertaLTransicion(afnd, getNombre(p_afnd->estados[i]), "qf_AFND10");
+			setTipo(p_afnd->estados[i], NORMAL);
+		} else {
+			AFNDInsertaLTransicion(afnd, "q0_AFND10", getNombre(p_afnd->estados[i]));
+			AFNDInsertaLTransicion(afnd, getNombre(p_afnd->estados[i]), "qf_AFND10");
+			setTipo(p_afnd->estados[i], NORMAL);
+		}
+	}
+}
 
 AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){}
 
@@ -471,4 +517,12 @@ AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2){}
 AFND * AFND1OEstrella(AFND * p_afnd_origen){}
 
 void AFNDADot(AFND * p_afnd){}
+
+AFND * nuevosEstadosAFND1O(AFND * p_afnd){
+	if (p_afnd == NULL) {
+		return NULL;
+	}
+	p_afnd->estados = (Estado **) realloc(p_afnd->estados, ((p_afnd->num_estados+2) * sizeof(Estado*)));
+	p_afnd->num_estados+=2;	
+}
 

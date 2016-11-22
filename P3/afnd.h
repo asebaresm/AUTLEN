@@ -117,6 +117,6 @@ AFND * AFND1OEstrella(AFND * p_afnd_origen);
 
 void AFNDADot(AFND * p_afnd);
 
-
+AFND * nuevoEstado(AFND * p_afnd);
 
 #endif
