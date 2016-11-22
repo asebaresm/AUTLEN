@@ -1,0 +1,20 @@
+==============================================================
+AUTORES:
+==============================================================
+	Alfonso Sebares
+	Juan Soberón
+
+==============================================================
+USOS:
+==============================================================
+make test_practica
+	- Compila y ejecuta el main proporcionado en el enunciado.
+
+make valgrind_test
+	- Compila y realiza el test de Valgrind sobre el main 
+	proporcionado en el enunciado.
+
+make prueba_dinamica
+	- Compila y realiza el test de Valgrind sobre el fichero
+	de Moodle'pr_afnd_s3.c' que analiza la parte dinámica de
+	los AFND.
