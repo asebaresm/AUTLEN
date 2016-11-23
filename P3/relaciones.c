@@ -62,6 +62,26 @@ void cierreTransit(Relaciones *m){
 		}	
 	}
 }
+Relaciones * reallocMatrix(Relaciones *m, int n){
+	int i = 0;
+	if (m == NULL ||n < 1){
+		return NULL;
+	}
+	m->matrix = (int **) realloc(m->matrix, ((m->tam + n) * sizeof(int*)));
+	/*Realloc de nuevos datos en cada fila*/
+	for (i = 0; i< m->tam; i++){
+		m->matrix[i] = (int *) realloc(m->matrix[i] , (m->tam + n) * sizeof(int));
+		memset(m->matrix[i] + m->tam, 0, (n * sizeof(int)));
+	}
+	/*Realloc de nuevas filas*/	
+	for (i = m->tam; i< m->tam + n; i++){
+		m->matrix[i] = (int *) realloc(m->matrix[i] , (m->tam + n) * sizeof(int));
+		memset(m->matrix[i], 0, ((m->tam + n) * sizeof(int)));
+	}
+
+	m->tam += n;
+	return m;
+}
 
 int getTam(Relaciones *m){
 	return m->tam;

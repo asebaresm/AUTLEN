@@ -29,6 +29,8 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 	afnd->estados_actuales = (Estado **) malloc(num_estados * sizeof(Estado *));
 	afnd->num_eactuales = 0;
 	afnd->lambdatrix = iniMatrix(num_estados);
+	afnd->potencia_i = NULL;
+	afnd->relacion_inicial_i = NULL;
 	return afnd;
 }
 
@@ -38,11 +40,14 @@ void AFNDElimina(AFND * p_afnd){
 	free(p_afnd->estados_actuales);
 	free(p_afnd->nombre);
 	if (p_afnd->cadena_entrada != NULL){
-		free(p_afnd->cadena_entrada);
-		
+		free(p_afnd->cadena_entrada);		
 	}
 	free(p_afnd->simbolos);
 	liberaMatrix(p_afnd->lambdatrix);
+	if (p_afnd->potencia_i != NULL){
+		liberaMatrix(p_afnd->potencia_i);
+		liberaMatrix(p_afnd->relacion_inicial_i);
+	}
 	free(p_afnd);
 }
 
@@ -464,8 +469,10 @@ AFND * AFND1ODeSimbolo( char * simbolo){
 	if ((afnd = AFNDNuevo(strcat("anfd1o_", simbolo), 2, 1)) == NULL) {
 		return NULL;
 	}
-	AFNDInsertaSimbolo(afnd,simbolo[0]);
-	AFNDInsertaTransicion(afnd, "q0", simbolo[0], "q1");
+	afnd->potencia_i = iniMatrix(afnd->num_estados);
+	afnd->relacion_inicial_i = iniMatrix(afnd->num_estados);
+	AFNDInsertaSimbolo(afnd, simbolo);
+	AFNDInsertaTransicion(afnd, "q0", simbolo, "q1");
 	return afnd;
 }
 
@@ -474,6 +481,8 @@ AFND * AFND1ODeLambda(){
 	if ((afnd = AFNDNuevo("anfd1o_lambda", 2, 0)) == NULL) {
 		return NULL;
 	}
+	afnd->potencia_i = iniMatrix(afnd->num_estados);
+	afnd->relacion_inicial_i = iniMatrix(afnd->num_estados);
 	AFNDInsertaLTransicion(afnd, "q0", "q1");
 	return afnd;
 }
@@ -483,31 +492,51 @@ AFND * AFND1ODeVacio(){
 	if ((afnd = AFNDNuevo("anfd1o_DeVacio", 2, 0)) == NULL) {
 		return NULL;
 	}
+	afnd->potencia_i = iniMatrix(afnd->num_estados);
+	afnd->relacion_inicial_i = iniMatrix(afnd->num_estados);
 	return afnd;
 }
 
 AFND * AFNDAAFND1O(AFND * p_afnd){
 	int i;
+	int n_size;
+	char * o_name;
 	if (p_afnd == NULL) {
 		return NULL;
 	}
 
-	AFNDInsertaEstado(p_afnd,"q0_AFND10",INICIAL);
-    	AFNDInsertaEstado(p_afnd,"qf_AFND10",FINAL);
+	nuevosEstadosAFND1O(p_afnd);
+	AFNDInsertaEstado(p_afnd,"_AFND1o_qini",INICIAL);
+    AFNDInsertaEstado(p_afnd,"_AFND1o_qfin",FINAL);
+   	p_afnd->potencia_i = iniMatrix(p_afnd->num_estados);
+	p_afnd->relacion_inicial_i = iniMatrix(p_afnd->num_estados);
+	/*Realloc de lambdatrix*/
+	reallocMatrix(p_afnd->lambdatrix, 2);
 
 	for (i=0; i<p_afnd->num_estados - 2; i++){
 		if (getTipo(p_afnd->estados[i]) == INICIAL){
-			AFNDInsertaLTransicion(afnd, "q0_AFND10", getNombre(p_afnd->estados[i]));
+			AFNDInsertaLTransicion(p_afnd, "_AFND1o_qini", getNombre(p_afnd->estados[i]));
 			setTipo(p_afnd->estados[i], NORMAL);
 		} else 	if (getTipo(p_afnd->estados[i]) == FINAL){
-			AFNDInsertaLTransicion(afnd, getNombre(p_afnd->estados[i]), "qf_AFND10");
+			AFNDInsertaLTransicion(p_afnd, getNombre(p_afnd->estados[i]), "_AFND1o_qfin");
 			setTipo(p_afnd->estados[i], NORMAL);
 		} else {
-			AFNDInsertaLTransicion(afnd, "q0_AFND10", getNombre(p_afnd->estados[i]));
-			AFNDInsertaLTransicion(afnd, getNombre(p_afnd->estados[i]), "qf_AFND10");
+			AFNDInsertaLTransicion(p_afnd, "_AFND1o_qini", getNombre(p_afnd->estados[i]));
+			AFNDInsertaLTransicion(p_afnd, getNombre(p_afnd->estados[i]), "_AFND1o_qfin");
 			setTipo(p_afnd->estados[i], NORMAL);
 		}
+		/*En cualquier caso, hay que renombrar los nombres de cada estado*/
+		n_size = strlen(getNombre(p_afnd->estados[i])) + strlen("_AFND1o_") + 1;
+		o_name = (char *) malloc (strlen(getNombre(p_afnd->estados[i])) + 1);
+		strcpy(o_name, getNombre(p_afnd->estados[i]));
+		p_afnd->estados[i]->n = (char *) realloc(getNombre(p_afnd->estados[i]), n_size * sizeof(char));
+		strcpy(p_afnd->estados[i]->n, "_AFND1o_");
+		strcat(p_afnd->estados[i]->n, o_name);
+		free(o_name);
 	}
+	AFNDImprimeMatrix(stdout, p_afnd);
+	AFNDCierraLTransicion(p_afnd);
+	return p_afnd;
 }
 
 AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){}
@@ -523,6 +552,7 @@ AFND * nuevosEstadosAFND1O(AFND * p_afnd){
 		return NULL;
 	}
 	p_afnd->estados = (Estado **) realloc(p_afnd->estados, ((p_afnd->num_estados+2) * sizeof(Estado*)));
-	p_afnd->num_estados+=2;	
+	p_afnd->num_estados+=2;
+	
+	return p_afnd;
 }
-

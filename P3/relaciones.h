@@ -30,6 +30,8 @@ void cierreReflex(Relaciones *m);
 
 void cierreTransit(Relaciones *m);
 
+Relaciones * reallocMatrix(Relaciones *m, int n);
+
 int getTam(Relaciones *m);
 
 int getMatrixData(Relaciones *m, int r, int c);

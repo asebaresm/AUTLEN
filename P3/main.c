@@ -19,11 +19,6 @@ int main(int argc, char ** argv)
 
     AFND * p_afnd_l;
 
-
-
-
-
-
     p_afnd_l = AFNDNuevo("afl1",8,2);
 
 

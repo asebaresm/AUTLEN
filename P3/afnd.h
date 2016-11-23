@@ -32,6 +32,8 @@ typedef struct Afnds {
 	Estado **estados_actuales;
 	int num_eactuales;
 	Relaciones *lambdatrix;
+	Relaciones *potencia_i;
+	Relaciones *relacion_inicial_i;
 } AFND;
 
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
@@ -117,6 +119,6 @@ AFND * AFND1OEstrella(AFND * p_afnd_origen);
 
 void AFNDADot(AFND * p_afnd);
 
-AFND * nuevoEstado(AFND * p_afnd);
+AFND * nuevosEstadosAFND1O(AFND * p_afnd);
 
 #endif

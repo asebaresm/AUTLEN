@@ -58,7 +58,7 @@ test_practica:
 prueba_dinamica: pr_afnd_s3
 	make valgrind_test
 
-valgrind_test: P2
+valgrind_test: P3
 	valgrind --leak-check=full --show-leak-kinds=all ./P3
 
 
