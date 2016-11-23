@@ -466,6 +466,7 @@ AFND * AFND1ODeSimbolo( char * simbolo){
 	if (simbolo == NULL) {
 		return NULL;
 	}
+
 	if ((afnd = AFNDNuevo(strcat("anfd1o_", simbolo), 2, 1)) == NULL) {
 		return NULL;
 	}
@@ -498,7 +499,6 @@ AFND * AFND1ODeVacio(){
 }
 
 AFND * AFNDAAFND1O(AFND * p_afnd){
-	int i;
 	if (p_afnd == NULL) {
 		return NULL;
 	}
@@ -511,27 +511,32 @@ AFND * AFNDAAFND1O(AFND * p_afnd){
 	/*Realloc de lambdatrix*/
 	reallocMatrix(p_afnd->lambdatrix, 2);
 	
-
-	for (i=0; i<p_afnd->num_estados - 2; i++){
-		if (getTipo(p_afnd->estados[i]) == INICIAL){
-			AFNDInsertaLTransicion(p_afnd, "_AFND1o_qini", getNombre(p_afnd->estados[i]));
-			setTipo(p_afnd->estados[i], NORMAL);
-		} else 	if (getTipo(p_afnd->estados[i]) == FINAL){
-			AFNDInsertaLTransicion(p_afnd, getNombre(p_afnd->estados[i]), "_AFND1o_qfin");
-			setTipo(p_afnd->estados[i], NORMAL);
-		} else if (getTipo(p_afnd->estados[i]) == INICIAL_Y_FINAL){
-			AFNDInsertaLTransicion(p_afnd, "_AFND1o_qini", getNombre(p_afnd->estados[i]));
-			AFNDInsertaLTransicion(p_afnd, getNombre(p_afnd->estados[i]), "_AFND1o_qfin");
-			setTipo(p_afnd->estados[i], NORMAL);
-		}
-		/*En cualquier caso, hay que renombrar los nombres de cada estado*/
-		renameEstado(p_afnd->estados[i], "_AFND1o_");
-	}
+	/*Transicionar hacia iniciales y finales*/
+	nuevasLTransicionesAFND1O(p_afnd, "_AFND1o_qini", "_AFND1o_qfin", "_AFND1o_");
 	AFNDCierraLTransicion(p_afnd);
 	return p_afnd;
 }
 
-AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){}
+AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
+	AFND * afnd;
+	char * n_name;
+	if (p_afnd1O_1 == NULL || p_afnd1O_2 == NULL){
+		return NULL;
+	}
+	n_name = (char *) malloc ((strlen(p_afnd1O_1->nombre) + strlen(p_afnd1O_2->nombre) + strlen("_U_") + 1) * sizeof(char));
+	strcpy(n_name, p_afnd1O_1->nombre);
+	strcat(n_name, "_U_");
+	strcat(n_name, p_afnd1O_2->nombre);
+	/*Nuevo AFND */
+
+	afnd = AFNDNuevo(n_name, p_afnd1O_1->num_estados + p_afnd1O_2->num_estados, /*num_simbolos*/);
+	free(n_name);
+	p_afnd->potencia_i = iniMatrix(p_afnd->num_estados);
+	p_afnd->relacion_inicial_i = iniMatrix(p_afnd->num_estados);
+
+
+	return afnd;
+}
 
 AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2){}
 
@@ -553,16 +558,39 @@ char * renameEstado(Estado * estado, char * new){
 	int n_size;
 	char *o_name;
 
-	if (estado == NULL){
+	if (estado == NULL || new == NULL){
 		return NULL;
 	}
 
 	n_size = strlen(getNombre(estado)) + strlen(new) + 1;
-	o_name = (char *) malloc (strlen(getNombre(estado) + 1));
+	o_name = (char *) malloc ((strlen(getNombre(estado)) + 1) * sizeof(char));
 	strcpy(o_name, getNombre(estado));
 	estado->n = (char *) realloc(getNombre(estado), n_size * sizeof(char));
 	strcpy(estado->n, new);
 	strcat(estado->n, o_name);
 	free(o_name);
 	return estado->n;
+}
+
+AFND * nuevasLTransicionesAFND1O(AFND * p_afnd, char * ini, char * fin, char * pref){
+	int i = 0;
+	if (p_afnd == NULL || ini == NULL || fin == NULL || pref == NULL) {
+		return NULL;
+	}
+	for (i=0; i<p_afnd->num_estados - 2; i++){
+		if (getTipo(p_afnd->estados[i]) == INICIAL){
+			AFNDInsertaLTransicion(p_afnd, ini, getNombre(p_afnd->estados[i]));
+			setTipo(p_afnd->estados[i], NORMAL);
+		} else 	if (getTipo(p_afnd->estados[i]) == FINAL){
+			AFNDInsertaLTransicion(p_afnd, getNombre(p_afnd->estados[i]), fin);
+			setTipo(p_afnd->estados[i], NORMAL);
+		} else if (getTipo(p_afnd->estados[i]) == INICIAL_Y_FINAL){
+			AFNDInsertaLTransicion(p_afnd, ini, getNombre(p_afnd->estados[i]));
+			AFNDInsertaLTransicion(p_afnd, getNombre(p_afnd->estados[i]), fin);
+			setTipo(p_afnd->estados[i], NORMAL);
+		}
+		/*En cualquier caso, hay que renombrar los nombres de cada estado*/
+		renameEstado(p_afnd->estados[i], pref);
+	}
+	return p_afnd;
 }

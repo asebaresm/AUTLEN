@@ -20,7 +20,7 @@ int main(int argc, char ** argv)
 	AFND * p_afnd_l5;
 	AFND * p_afnd_l6;
 
-	AFND * p_afnd_l;
+	/*AFND * p_afnd_l;
 
     p_afnd_l = AFNDNuevo("afl1",8,2);
 
@@ -60,7 +60,7 @@ int main(int argc, char ** argv)
     AFNDAAFND1O(p_afnd_l);
     AFNDImprime(stdout, p_afnd_l);
     AFNDElimina(p_afnd_l);
-    return EXIT_SUCCESS;
+    return EXIT_SUCCESS;*/
 
     
 /* SE CREA UN AUTÓMATA FINITO PARA LA EXPRESION REGULAR “1” */
