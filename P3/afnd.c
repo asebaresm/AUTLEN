@@ -499,8 +499,6 @@ AFND * AFND1ODeVacio(){
 
 AFND * AFNDAAFND1O(AFND * p_afnd){
 	int i;
-	int n_size;
-	char * o_name;
 	if (p_afnd == NULL) {
 		return NULL;
 	}
@@ -512,6 +510,7 @@ AFND * AFNDAAFND1O(AFND * p_afnd){
 	p_afnd->relacion_inicial_i = iniMatrix(p_afnd->num_estados);
 	/*Realloc de lambdatrix*/
 	reallocMatrix(p_afnd->lambdatrix, 2);
+	
 
 	for (i=0; i<p_afnd->num_estados - 2; i++){
 		if (getTipo(p_afnd->estados[i]) == INICIAL){
@@ -520,21 +519,14 @@ AFND * AFNDAAFND1O(AFND * p_afnd){
 		} else 	if (getTipo(p_afnd->estados[i]) == FINAL){
 			AFNDInsertaLTransicion(p_afnd, getNombre(p_afnd->estados[i]), "_AFND1o_qfin");
 			setTipo(p_afnd->estados[i], NORMAL);
-		} else {
+		} else if (getTipo(p_afnd->estados[i]) == INICIAL_Y_FINAL){
 			AFNDInsertaLTransicion(p_afnd, "_AFND1o_qini", getNombre(p_afnd->estados[i]));
 			AFNDInsertaLTransicion(p_afnd, getNombre(p_afnd->estados[i]), "_AFND1o_qfin");
 			setTipo(p_afnd->estados[i], NORMAL);
 		}
 		/*En cualquier caso, hay que renombrar los nombres de cada estado*/
-		n_size = strlen(getNombre(p_afnd->estados[i])) + strlen("_AFND1o_") + 1;
-		o_name = (char *) malloc (strlen(getNombre(p_afnd->estados[i])) + 1);
-		strcpy(o_name, getNombre(p_afnd->estados[i]));
-		p_afnd->estados[i]->n = (char *) realloc(getNombre(p_afnd->estados[i]), n_size * sizeof(char));
-		strcpy(p_afnd->estados[i]->n, "_AFND1o_");
-		strcat(p_afnd->estados[i]->n, o_name);
-		free(o_name);
+		renameEstado(p_afnd->estados[i], "_AFND1o_");
 	}
-	AFNDImprimeMatrix(stdout, p_afnd);
 	AFNDCierraLTransicion(p_afnd);
 	return p_afnd;
 }
@@ -555,4 +547,22 @@ AFND * nuevosEstadosAFND1O(AFND * p_afnd){
 	p_afnd->num_estados+=2;
 	
 	return p_afnd;
+}
+
+char * renameEstado(Estado * estado, char * new){
+	int n_size;
+	char *o_name;
+
+	if (estado == NULL){
+		return NULL;
+	}
+
+	n_size = strlen(getNombre(estado)) + strlen(new) + 1;
+	o_name = (char *) malloc (strlen(getNombre(estado) + 1));
+	strcpy(o_name, getNombre(estado));
+	estado->n = (char *) realloc(getNombre(estado), n_size * sizeof(char));
+	strcpy(estado->n, new);
+	strcat(estado->n, o_name);
+	free(o_name);
+	return estado->n;
 }

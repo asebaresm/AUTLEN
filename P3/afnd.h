@@ -121,4 +121,5 @@ void AFNDADot(AFND * p_afnd);
 
 AFND * nuevosEstadosAFND1O(AFND * p_afnd);
 
+char * renameEstado(Estado * estado, char * new);
 #endif
