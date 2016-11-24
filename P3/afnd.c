@@ -520,17 +520,46 @@ AFND * AFNDAAFND1O(AFND * p_afnd){
 AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	AFND * afnd;
 	char * n_name;
+	int simbolos_comunes, i, j;
 	if (p_afnd1O_1 == NULL || p_afnd1O_2 == NULL){
 		return NULL;
 	}
-	n_name = (char *) malloc ((strlen(p_afnd1O_1->nombre) + strlen(p_afnd1O_2->nombre) + strlen("_U_") + 1) * sizeof(char));
+	n_name = (char *) malloc ((strlen(p_afnd1O_1->nombre) + strlen(p_afnd1O_2->nombre) + strlen("_1_U__2") + 1) * sizeof(char));
 	strcpy(n_name, p_afnd1O_1->nombre);
-	strcat(n_name, "_U_");
+	strcat(n_name, "_1_U_");
 	strcat(n_name, p_afnd1O_2->nombre);
+	strcat(n_name, "_2");
 	/*Nuevo AFND */
-
-	afnd = AFNDNuevo(n_name, p_afnd1O_1->num_estados + p_afnd1O_2->num_estados, /*num_simbolos*/);
+	/*Calcular numero de simbolos totales entre los dos simbolos*/
+	simbolos_comunes = AFNDNSimbolos(p_afnd1O_1, p_afnd1O_2);
+	afnd = AFNDNuevo(n_name, p_afnd1O_1->num_estados + p_afnd1O_2->num_estados, p_afnd1O_1->num_simbolos + p_afnd1O_2->num_simbolos - simbolos_comunes);
 	free(n_name);
+	/*Insertar simbolos*/
+	AFNDInsertaCadenaSimbolos(afnd, p_afnd1O_1->simbolos);
+	AFNDInsertaCadenaSimbolos(afnd, p_afnd1O_2->simbolos);
+	/*Insertar y renombrar y rehacer tipo de estados*/
+	/*AFNDMixEstadosUne(afnd, p_afnd1O_1->estados, p_afnd1O_2->estados);*/
+	for (i = 0; i < p_afnd1O_1->num_estados; i++){
+		AFNDInsertaEstado(afnd, p_afnd1O_1->estados[i], getTipo(p_afnd1O_1->estados[i]));
+		/*TRANSICIONES*/
+		renameEstado(afnd->estados[i], "_U1_");
+	}
+	/*Necesario reordenar esto*/
+	for (i = 0; i < p_afnd1O_2->num_estados; i++){
+
+		for (j = 0; j < p_afnd1O_1->num_estados; j++){
+			if ((getTipo(afnd->estados[j]) == FINAL || getTipo(afnd->estados[j]) == INICIAL_Y_FINAL) 
+				&& (getTipo(p_afnd1O_2->estados[i]) == INICIAL || )getTipo(p_afnd1O_2->estados[i]) == INICIAL_Y_FINAL){
+				AFNDInsertaLTransicion(afnd, ini, getNombre(p_afnd->estados[i]));
+				setTipo(afnd->estados[i], NORMAL);
+			}
+		}
+		AFNDInsertaEstado(afnd, p_afnd1O_2->estados[i], getTipo(p_afnd1O_2->estados[i]));
+
+
+		renameEstado(afnd->estados[i + p_afnd1O_1->num_estados], "_U2_");
+	}
+	
 	p_afnd->potencia_i = iniMatrix(p_afnd->num_estados);
 	p_afnd->relacion_inicial_i = iniMatrix(p_afnd->num_estados);
 
@@ -544,6 +573,7 @@ AFND * AFND1OEstrella(AFND * p_afnd_origen){}
 
 void AFNDADot(AFND * p_afnd){}
 
+/*Crear estado inicial y final*/
 AFND * nuevosEstadosAFND1O(AFND * p_afnd){
 	if (p_afnd == NULL) {
 		return NULL;
@@ -591,6 +621,31 @@ AFND * nuevasLTransicionesAFND1O(AFND * p_afnd, char * ini, char * fin, char * p
 		}
 		/*En cualquier caso, hay que renombrar los nombres de cada estado*/
 		renameEstado(p_afnd->estados[i], pref);
+	}
+	return p_afnd;
+}
+
+int AFNDNSimbolos(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
+	int i;
+	int tot = 0;
+	if (p_afnd1O_1 == NULL || p_afnd1O_2 == NULL){
+		return NULL;
+	} 
+	for (i = 0; i < p_afnd10_1->num_simbolos; i++){
+		if (strchr(p_afnd10_2->simbolos, p_afnd10_1->simbolos[i]) != NULL){
+			tot++;
+		}
+	}
+	return tot;
+}
+
+AFND * AFNDInsertaCadenaSimbolos(AFND * p_afnd, char * cadena){
+	int i;
+	if (p_afnd == NULL || cadena == NULL){
+		return NULL;
+	}
+	for (i = 0; i < strlen(cadena); i++){
+		AFNDInsertaSimbolo(p_afnd, cadena[0]);
 	}
 	return p_afnd;
 }

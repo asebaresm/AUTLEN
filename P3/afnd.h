@@ -124,4 +124,10 @@ AFND * nuevosEstadosAFND1O(AFND * p_afnd);
 char * renameEstado(Estado * estado, char * new);
 
 AFND * nuevasLTransicionesAFND1O(AFND * p_afnd);
+
+int AFNDNSimbolos(p_afnd1O_1, AFND * p_afnd1O_2);
+
+AFND * AFNDInsertaCadenaSimbolos(AFND * p_afnd, char * cadena);
+
+
 #endif
