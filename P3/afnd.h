@@ -133,4 +133,6 @@ AFND * AFND1OExportarTransiciones(AFND * p_afnd_n, AFND * p_afnd_o, char * nombr
 
 char * AFND1ONuevoNombre(AFND * afnd_1, AFND * afnd_2, char * mid, char * suf);
 
+AFND * AFNDExportarMatrices(AFND * afnd_n, AFND * afnd_o, int pos);
+
 #endif

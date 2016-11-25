@@ -35,4 +35,6 @@ Relaciones * reallocMatrix(Relaciones *m, int n);
 int getTam(Relaciones *m);
 
 int getMatrixData(Relaciones *m, int r, int c);
+
+void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r);
 #endif

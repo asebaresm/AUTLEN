@@ -90,3 +90,23 @@ int getTam(Relaciones *m){
 int getMatrixData(Relaciones *m, int r, int c){
 	return m->matrix[r][c];
 }
+
+void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r){
+	int i , j , k;
+	if (c == NULL || p == NULL || r == NULL){
+		return;
+	}
+	for (i = 0; i < c->tam; i++) {
+		for (j = 0; j < c->tam; j++){
+			if (r->matrix[i][j] == 1) {
+				insertaL(c, i, j);
+				for (k = 0; k < c->tam; k++){
+					if (r->matrix[k][i] == 1) {
+						insertaL(p, k, j);
+						insertaL(c, k, j);
+					}
+				} 	
+			}
+		}	
+	}
+}

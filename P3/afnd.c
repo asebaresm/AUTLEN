@@ -426,13 +426,25 @@ AFND * AFNDInsertaLTransicion(AFND * p_afnd,
 	}
 	id_i = getId(getEstadoAFND(p_afnd, nombre_estado_i));
 	id_f = getId(getEstadoAFND(p_afnd, nombre_estado_f));
-	insertaL(p_afnd->lambdatrix, id_i, id_f);
+	if (p_afnd->potencia_i != NULL) {
+		insertaL(p_afnd->relacion_inicial_i, id_i, id_f);	
+	} else {
+		insertaL(p_afnd->lambdatrix, id_i, id_f);
+	}
+	/*Insertar en potencia i o alguna de esas*/
 	return p_afnd;
 }
 
 AFND * AFNDCierraLTransicion (AFND * p_afnd){
+	if (p_afnd == NULL){
+		return NULL;
+	}
+	if (p_afnd->potencia_i == NULL) {
+		cierreTransit(p_afnd->lambdatrix);			
+	} else {
+		cierreTransitAFND1O(p_afnd->lambdatrix, p_afnd->potencia_i, p_afnd->relacion_inicial_i);
+	}
 	cierreReflex(p_afnd->lambdatrix);
-	cierreTransit(p_afnd->lambdatrix);
 	return p_afnd;
 }
 
@@ -559,13 +571,14 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	simbolos_comunes = AFNDNSimbolos(p_afnd1O_1, p_afnd1O_2);
 	afnd = AFNDNuevo(n_name, p_afnd1O_1->num_estados + p_afnd1O_2->num_estados + 2, p_afnd1O_1->num_simbolos + p_afnd1O_2->num_simbolos - simbolos_comunes);
 	free(n_name);
+	afnd->potencia_i = iniMatrix(afnd->num_estados);
+	afnd->relacion_inicial_i = iniMatrix(afnd->num_estados);
 	/*Insertar simbolos*/
 	AFNDInsertaCadenaSimbolos(afnd, p_afnd1O_1->simbolos);
 	AFNDInsertaCadenaSimbolos(afnd, p_afnd1O_2->simbolos);
 
 
 	/*Insertar y renombrar y rehacer tipo de estados*/
-	/*AFNDMixEstadosUne(afnd, p_afnd1O_1->estados, p_afnd1O_2->estados);*/
 	for (i = 0; i < p_afnd1O_1->num_estados; i++){
 		AFNDInsertaEstado(afnd, getNombre(p_afnd1O_1->estados[i]), getTipo(p_afnd1O_1->estados[i]));
 		renameEstado(afnd->estados[i], "_U1_");
@@ -573,12 +586,9 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	/*TRANSICIONES*/
 	AFND1OExportarTransiciones(afnd, p_afnd1O_1, "_U1_");
 
-		/*MATRICES*/
-	for (i = 0; i < p_afnd1O_1->num_estados; i++){
-		for (j = 0; j < p_afnd1O_1->num_estados; j++){
-			
-		}		
-	}
+	/*MATRICES*/
+	AFNDExportarMatrices(afnd, p_afnd1O_1, 0);
+	AFNDExportarMatrices(afnd, p_afnd1O_2, p_afnd1O_1->num_estados);
 
 	for (i = 0; i < p_afnd1O_2->num_estados; i++){
 		AFNDInsertaEstado(afnd, getNombre(p_afnd1O_2->estados[i]), getTipo(p_afnd1O_2->estados[i]));
@@ -604,9 +614,9 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	AFNDInsertaEstado(afnd,"_i_1O",INICIAL);
     AFNDInsertaEstado(afnd,"_f_1O",FINAL);
     /*reallocMatrix(afnd->lambdatrix, 2);*/
-    afnd->potencia_i = iniMatrix(afnd->num_estados);
-	afnd->relacion_inicial_i = iniMatrix(afnd->num_estados);
+
 	nuevasLTransicionesAFND1O(afnd, "_i_1O", "_f_1O", "hola");
+	AFNDCierraLTransicion (afnd);
 
 	return afnd;
 }
@@ -737,4 +747,17 @@ char * AFND1ONuevoNombre(AFND * afnd_1, AFND * afnd_2, char * mid, char * suf){
 	strcat(c, afnd_2->nombre);
 	strcat(c, suf);
 	return c;
+}
+
+AFND * AFNDExportarMatrices(AFND * afnd_n, AFND * afnd_o, int pos){
+	int i, j;
+	if (afnd_n == NULL || afnd_o == NULL || pos < 0){
+		return NULL;
+	}
+	for (i = 0; i < getTam(afnd_o->lambdatrix); i++){
+		for (j = 0; j < getTam(afnd_o->lambdatrix); j++){
+			afnd_n->lambdatrix->matrix[i + pos][j + pos] = getMatrixData(afnd_o->lambdatrix, i, j);		
+		}		
+	}
+	return afnd_n;
 }
