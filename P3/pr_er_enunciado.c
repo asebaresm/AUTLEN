@@ -75,10 +75,17 @@ int main(int argc, char ** argv)
 
 /* SE CREA UN AUTÓMATA FINITO PARA LA EXPRESION REGULAR “0”+“1” */
         p_afnd_l4 = AFND1OUne(p_afnd_l0, p_afnd_l1);
+        p_afnd_l3 = AFND1OConcatena(p_afnd_l0, p_afnd_l1);
+        p_afnd_l6 = AFND1OEstrella(p_afnd_l1);
         AFNDImprime(stdout, p_afnd_l4);
+        AFNDImprime(stdout, p_afnd_l3);
+        AFNDImprime(stdout, p_afnd_l6);
+    	AFNDElimina(p_afnd_l6);
     	AFNDElimina(p_afnd_l4);
     	AFNDElimina(p_afnd_l0);
     	AFNDElimina(p_afnd_l1);
+	   	AFNDElimina(p_afnd_l3);
+
     	return EXIT_SUCCESS;
 /* SE CREA UN AUTÓMATA FINITO PARA LA EXPRESIÓN ( “0”+”1” ) *  */
         p_afnd_l5 = AFND1OEstrella(p_afnd_l4);
