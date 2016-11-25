@@ -129,5 +129,8 @@ int AFNDNSimbolos(AFND * afnd_1, AFND * afnd_2);
 
 AFND * AFNDInsertaCadenaSimbolos(AFND * p_afnd, char * cadena);
 
+AFND * AFND1OExportarTransiciones(AFND * p_afnd_n, AFND * p_afnd_o, char * nombre);
+
+char * AFND1ONuevoNombre(AFND * afnd_1, AFND * afnd_2, char * mid, char * suf);
 
 #endif
