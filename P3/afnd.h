@@ -42,7 +42,7 @@ void AFNDElimina(AFND * p_afnd);
 
 void liberarEstadosAFND(AFND *p_afnd);
 
-void liberarTransicionesANFD(AFND *p_afnd);
+void liberarTransicionesAFND(AFND *p_afnd);
 
 void AFNDImprime(FILE * fd, AFND* p_afnd);
 

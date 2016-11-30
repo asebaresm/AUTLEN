@@ -50,7 +50,7 @@ relaciones.o: relaciones.c
 # Otras acciones del make
 #==================================================================================
 clean:
-	rm -rf *.o *.core *~ *\.a *\.salida *\.out $(EJECUTABLES)
+	rm -rf *.o *.core *~ *\.a *\.salida *\.out *.dot *.gif $(EJECUTABLES)
 
 test_practica:
 	./P3
