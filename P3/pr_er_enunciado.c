@@ -19,6 +19,7 @@ int main(int argc, char ** argv)
 	AFND * p_afnd_l4;
 	AFND * p_afnd_l5;
 	AFND * p_afnd_l6;
+	/*AFND * p_afnd_l7;*/
 
 
 /* SE CREA UN AUTÓMATA FINITO PARA LA EXPRESION REGULAR “1” */
@@ -29,6 +30,11 @@ int main(int argc, char ** argv)
         p_afnd_l2 = AFND1OConcatena(p_afnd_l1, p_afnd_l1);
 /* SE CREA UN AUTÓMATA FINITO PARA LA EXPRESION REGULAR “0”+“1” */
         p_afnd_l4 = AFND1OUne(p_afnd_l0, p_afnd_l1);
+        /*p_afnd_l7 = AFND1OUne(p_afnd_l4, p_afnd_l4);
+        AFNDImprime(stdout,p_afnd_l7);
+        AFNDADot(p_afnd_l7);
+        AFNDElimina(p_afnd_l7);
+        return EXIT_SUCCESS;*/
 /* SE CREA UN AUTÓMATA FINITO PARA LA EXPRESIÓN ( “0”+”1” ) *  */
         p_afnd_l5 = AFND1OEstrella(p_afnd_l4);
 /* SE CREA UN AUTÓMATA FINITO PARA LA EXPRESIÓN “1”.”1”.( “0”+”1” )*   */

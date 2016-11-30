@@ -55,11 +55,18 @@ clean:
 test_practica:
 	./P3
 
-prueba_dinamica: pr_afnd_s3
-	make valgrind_test
-
 valgrind_test: P3
 	valgrind --leak-check=full --show-leak-kinds=all ./P3
+
+dot_creation: P3
+	./P3
+	dot -Tgif afnd1o_0.dot > afnd1o_0.gif
+	dot -Tgif afnd1o_0_1_U_afnd1o_1_2.dot > afnd1o_0_1_U_afnd1o_1_2.gif
+	dot -Tgif afnd1o_0_1_U_afnd1o_1_2X.dot > afnd1o_0_1_U_afnd1o_1_2X.gif
+	dot -Tgif afnd1o_1_1_K_afnd1o_1_2_1_K_afnd1o_0_1_U_afnd1o_1_2X_2.dot > afnd1o_1_1_K_afnd1o_1_2_1_K_afnd1o_0_1_U_afnd1o_1_2X_2.gif
+	dot -Tgif afnd1o_1_1_K_afnd1o_1_2.dot > afnd1o_1_1_K_afnd1o_1_2.gif
+	dot -Tgif afnd1o_1.dot > afnd1o_1.gif
+	dot -Tgif afnd1o_1X.dot > afnd1o_1X.gif
 
 
 #valgrind_testP1: testP1

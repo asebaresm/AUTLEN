@@ -662,11 +662,11 @@ AFND * AFND1OConcatena(AFND * p_afnd_origen1, AFND * p_afnd_origen2){
 	AFND1OExportarTransiciones(afnd, p_afnd_origen2, "_K2_");
 
 	/*nuevosEstadosAFND1O(afnd);*/
-	AFNDInsertaEstado(afnd,"_i_1O",INICIAL);
-    AFNDInsertaEstado(afnd,"_f_1O",FINAL);
+	AFNDInsertaEstado(afnd,"_K_i",INICIAL);
+    AFNDInsertaEstado(afnd,"_K_f",FINAL);
     /*reallocMatrix(afnd->lambdatrix, 2);*/
 
-	nuevasLTransicionesAFND1O(afnd, "_K_1O", "_K_1O", "hola");
+	nuevasLTransicionesAFND1O(afnd, "_K_i", "_K_f", "hola");
 	AFNDCierraLTransicion (afnd);
 
 	return afnd;
@@ -750,7 +750,7 @@ void AFNDADot(AFND * p_afnd){
     /*Printear transiciones lambda*/
     for (i = 0; i < p_afnd->num_estados; i++){
     	for (j = 0; j < p_afnd->num_estados; j++){
-    		if (getMatrixData(p_afnd->lambdatrix, i, j) == 1 && i != j) {
+    		if (getMatrixData(p_afnd->relacion_inicial_i, i, j) == 1 && i != j) {
     			fprintf(f, "\t\t%s -> %s [label=\"&lambda;\"];\n", getNombre(getEstadoPorId(p_afnd->estados, p_afnd->i_estados, i)), getNombre(getEstadoPorId(p_afnd->estados, p_afnd->i_estados, j)));  	
     		}
     	}
@@ -899,7 +899,11 @@ AFND * AFNDExportarMatrices(AFND * afnd_n, AFND * afnd_o, int pos){
 	}
 	for (i = 0; i < getTam(afnd_o->lambdatrix); i++){
 		for (j = 0; j < getTam(afnd_o->lambdatrix); j++){
-			afnd_n->lambdatrix->matrix[i + pos][j + pos] = getMatrixData(afnd_o->lambdatrix, i, j);		
+			afnd_n->lambdatrix->matrix[i + pos][j + pos] = getMatrixData(afnd_o->lambdatrix, i, j);
+			if (afnd_n->relacion_inicial_i != NULL){
+				afnd_n->relacion_inicial_i->matrix[i + pos][j + pos] = getMatrixData(afnd_o->relacion_inicial_i, i, j);		
+				afnd_n->potencia_i->matrix[i + pos][j + pos] = getMatrixData(afnd_o->potencia_i, i, j);
+			}	
 		}		
 	}
 	return afnd_n;

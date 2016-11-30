@@ -103,6 +103,7 @@ void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r){
 				for (k = 0; k < c->tam; k++){
 					if (r->matrix[k][i] == 1) {
 						insertaL(p, k, j);
+						/*TO-DO: REACTUALIZAR LA PROPIA MATRIZ P*/
 						insertaL(c, k, j);
 					}
 				} 	
