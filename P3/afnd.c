@@ -602,7 +602,7 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
     AFNDInsertaEstado(afnd,"_f_1O",FINAL);
     /*reallocMatrix(afnd->lambdatrix, 2);*/
 
-	nuevasLTransicionesAFND1O(afnd, "_U_i", "_U_f", "hola");
+	nuevasLTransicionesAFND1O(afnd, "_i_1O", "_f_1O", "hola");
 	AFNDCierraLTransicion(afnd);
 
 	return afnd;

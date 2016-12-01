@@ -149,7 +149,11 @@ void gancho(int * a, int k, Relaciones * c, Relaciones * r){
 				insertaL(c, a[j], i);
 			}
 			if (isInArray(a, k, i) == 0) {
-				return;
+				if (a[k-1] == i){
+					continue;
+				} else {
+					return;
+				}
 			}			
 			a[k + 1] = i;
 			gancho(a, k + 1, c, r);
