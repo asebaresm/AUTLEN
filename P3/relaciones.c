@@ -92,7 +92,7 @@ int getMatrixData(Relaciones *m, int r, int c){
 }
 
 void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r){
-	int i , j , k;
+	/*int i , j , k;
 	if (c == NULL || p == NULL || r == NULL){
 		return;
 	}
@@ -103,11 +103,69 @@ void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r){
 				for (k = 0; k < c->tam; k++){
 					if (r->matrix[k][i] == 1) {
 						insertaL(p, k, j);
-						/*TO-DO: REACTUALIZAR LA PROPIA MATRIZ P*/
 						insertaL(c, k, j);
 					}
-				} 	
+				}
+				for (k = 0; k < c->tam; k++){
+					if (r->matrix[j][k] == 1) {
+						insertaL(p, i, k);
+						insertaL(c, i, k);
+					}
+				}
+			}
+		}	
+	}*/
+	int i , j;
+	int * array;
+	if (c == NULL || p == NULL || r == NULL){
+		return;
+	}
+	array = (int*) malloc(c->tam * sizeof(int));
+	for (i = 0; i < c->tam; i++) {
+		for (j = 0; j < c->tam; j++){
+			if (r->matrix[i][j] == 1) {
+				insertaL(c, i, j);
+				array[0] = i;
+				array[1] = j;
+				gancho(array, 1, c, r);
 			}
 		}	
 	}
+	free(array);
+}
+
+void gancho(int * a, int k, Relaciones * c, Relaciones * r){
+	int i, j;
+	if (c == NULL || a == NULL || r == NULL || k < 1){
+		return;
+	}
+	for (i = 0; i < c->tam; i++){
+		printf("%d ", a[i]);
+	}
+	printf("\n");
+	for (i = 0; i < c->tam; i++){
+		if (r->matrix[a[k]][i] == 1) {
+			for (j = 0; j <= k; j++){
+				insertaL(c, a[j], i);
+			}
+			if (isInArray(a, k, i) == 0) {
+				return;
+			}			
+			a[k + 1] = i;
+			gancho(a, k + 1, c, r);
+		}
+	}
+}
+
+int isInArray(int * a, int k, int n){
+	int i;
+	if (a == NULL || n < 0 || k < 1) {
+		return -1;
+	}
+	for (i = 0; i <= k; i++) {
+		if (a[i] == n){
+			return 0;
+		}
+	}
+	return -1;
 }

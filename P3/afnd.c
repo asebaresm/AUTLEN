@@ -256,9 +256,9 @@ void AFNDImprimeConjuntoEstadosTotal(FILE * fd, AFND * p_afnd){
 
 		if (getTipo(p_afnd->estados[i]) == FINAL
 		 || getTipo(p_afnd->estados[i]) == INICIAL_Y_FINAL){
-			fprintf(fd, "* ");
+			fprintf(fd, "*  ");
 		} else {
-			fprintf(fd, " ");
+			fprintf(fd, "  ");
 		}
 	}
 	fprintf(fd, "}\n\n\n");
@@ -598,8 +598,8 @@ AFND * AFND1OUne(AFND * p_afnd1O_1, AFND * p_afnd1O_2){
 	AFND1OExportarTransiciones(afnd, p_afnd1O_2, "_U2_");
 
 	/*nuevosEstadosAFND1O(afnd);*/
-	AFNDInsertaEstado(afnd,"_U_i",INICIAL);
-    AFNDInsertaEstado(afnd,"_U_f",FINAL);
+	AFNDInsertaEstado(afnd,"_i_1O",INICIAL);
+    AFNDInsertaEstado(afnd,"_f_1O",FINAL);
     /*reallocMatrix(afnd->lambdatrix, 2);*/
 
 	nuevasLTransicionesAFND1O(afnd, "_U_i", "_U_f", "hola");

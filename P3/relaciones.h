@@ -37,4 +37,8 @@ int getTam(Relaciones *m);
 int getMatrixData(Relaciones *m, int r, int c);
 
 void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r);
+
+void gancho(int * a, int k, Relaciones * c, Relaciones * r);
+
+int isInArray(int * a, int k, int n);
 #endif
