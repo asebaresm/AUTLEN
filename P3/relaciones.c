@@ -92,71 +92,52 @@ int getMatrixData(Relaciones *m, int r, int c){
 }
 
 void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r){
-	/*int i , j , k;
-	if (c == NULL || p == NULL || r == NULL){
-		return;
-	}
-	for (i = 0; i < c->tam; i++) {
-		for (j = 0; j < c->tam; j++){
-			if (r->matrix[i][j] == 1) {
-				insertaL(c, i, j);
-				for (k = 0; k < c->tam; k++){
-					if (r->matrix[k][i] == 1) {
-						insertaL(p, k, j);
-						insertaL(c, k, j);
-					}
-				}
-				for (k = 0; k < c->tam; k++){
-					if (r->matrix[j][k] == 1) {
-						insertaL(p, i, k);
-						insertaL(c, i, k);
-					}
-				}
-			}
-		}	
-	}*/
 	int i , j;
 	int * array;
 	if (c == NULL || p == NULL || r == NULL){
 		return;
 	}
 	array = (int*) malloc(c->tam * sizeof(int));
+	memset(array, 0, (c->tam * sizeof(int)));
 	for (i = 0; i < c->tam; i++) {
 		for (j = 0; j < c->tam; j++){
 			if (r->matrix[i][j] == 1) {
 				insertaL(c, i, j);
 				array[0] = i;
 				array[1] = j;
-				gancho(array, 1, c, r);
+				HookClose(array, 1, c, p, r);
 			}
 		}	
 	}
 	free(array);
 }
 
-void gancho(int * a, int k, Relaciones * c, Relaciones * r){
+/*Algoritmo recursivo para calcular todos los cierres de transiciones lambda,
+almacenando las ids de los estados previos conectados en un array*/
+void HookClose(int * a, int k, Relaciones * c, Relaciones * p, Relaciones * r){
 	int i, j;
-	if (c == NULL || a == NULL || r == NULL || k < 1){
+	if (c == NULL || p==NULL || a == NULL || r == NULL || k < 1){
 		return;
 	}
 	for (i = 0; i < c->tam; i++){
-		printf("%d ", a[i]);
-	}
-	printf("\n");
-	for (i = 0; i < c->tam; i++){
 		if (r->matrix[a[k]][i] == 1) {
+			/*Potencia i=1... por ejemplo*/
+			insertaL(p, a[k-1], i);
 			for (j = 0; j <= k; j++){
 				insertaL(c, a[j], i);
 			}
+			/*Control de posibles errores*/
 			if (isInArray(a, k, i) == 0) {
+				/*Cierre estrella*/
 				if (a[k-1] == i){
 					continue;
+				/*Bucle de lambdas*/
 				} else {
 					return;
 				}
 			}			
 			a[k + 1] = i;
-			gancho(a, k + 1, c, r);
+			HookClose(a, k + 1, c, p, r);
 		}
 	}
 }
