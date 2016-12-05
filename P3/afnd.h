@@ -123,7 +123,7 @@ AFND * nuevosEstadosAFND1O(AFND * p_afnd);
 
 char * renameEstado(Estado * estado, char * new);
 
-AFND * nuevasLTransicionesAFND1O(AFND * p_afnd, char * ini, char * fin, char * pref);
+AFND * nuevasLTransicionesAFND1O(AFND * p_afnd, char * ini, char * fin);
 
 int AFNDNSimbolos(AFND * afnd_1, AFND * afnd_2);
 
