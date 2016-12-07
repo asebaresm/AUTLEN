@@ -31,6 +31,7 @@ AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
 	afnd->lambdatrix = iniMatrix(num_estados);
 	afnd->potencia_i = NULL;
 	afnd->relacion_inicial_i = NULL;
+	afnd->mas = 0;
 	return afnd;
 }
 
@@ -424,6 +425,7 @@ AFND * AFNDInsertaLTransicion(AFND * p_afnd,
 		|| isEstado(p_afnd, nombre_estado_f) == FALSE) {
 		return NULL;
 	}
+
 	id_i = getId(getEstadoAFND(p_afnd, nombre_estado_i));
 	id_f = getId(getEstadoAFND(p_afnd, nombre_estado_f));
 	if (p_afnd->potencia_i != NULL) {
@@ -431,7 +433,7 @@ AFND * AFNDInsertaLTransicion(AFND * p_afnd,
 	} else {
 		insertaL(p_afnd->lambdatrix, id_i, id_f);
 	}
-	/*Insertar en potencia i o alguna de esas*/
+	p_afnd->mas = 1;
 	return p_afnd;
 }
 
@@ -442,7 +444,7 @@ AFND * AFNDCierraLTransicion (AFND * p_afnd){
 	if (p_afnd->potencia_i == NULL) {
 		cierreTransit(p_afnd->lambdatrix);			
 	} else {
-		cierreTransitAFND1O(p_afnd->lambdatrix, p_afnd->potencia_i, p_afnd->relacion_inicial_i);
+		cierreTransitAFND1O(p_afnd->lambdatrix, p_afnd->potencia_i, p_afnd->relacion_inicial_i, &(p_afnd->mas));
 	}
 	cierreReflex(p_afnd->lambdatrix);
 	return p_afnd;
@@ -456,7 +458,14 @@ AFND * AFNDImprimeMatrix(FILE * fd, AFND* p_afnd){
 		return NULL;
 	}
 	t = getTam(p_afnd->lambdatrix);
-	fprintf(fd, "\tRL++*={\n\n\t");
+	fprintf(fd, "\tRL");
+	for (i = 0; i < p_afnd->mas; i++){
+		fprintf(fd, "+");
+	}
+	if (p_afnd->mas != 0){
+		fprintf(fd, "*");	
+	}
+	fprintf(fd, "={\n\n\t");
 	for (i = 0; i < t; i++){
 		fprintf(fd, "\t[%d]", i);
 	}

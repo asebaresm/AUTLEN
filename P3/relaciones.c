@@ -91,8 +91,9 @@ int getMatrixData(Relaciones *m, int r, int c){
 	return m->matrix[r][c];
 }
 
-void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r){
+void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r, int * mas){
 	int i , j;
+	int k = 0;
 	int * array;
 	if (c == NULL || p == NULL || r == NULL){
 		return;
@@ -105,7 +106,11 @@ void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r){
 				insertaL(c, i, j);
 				array[0] = i;
 				array[1] = j;
-				HookClose(array, 1, c, p, r);
+				HookClose(array, 1, c, p, r, &k);
+				if (k > *mas){
+					*mas = k;
+				}
+                                k = 0;
 			}
 		}	
 	}
@@ -114,7 +119,7 @@ void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r){
 
 /*Algoritmo recursivo para calcular todos los cierres de transiciones lambda,
 almacenando las ids de los estados previos conectados en un array*/
-void HookClose(int * a, int k, Relaciones * c, Relaciones * p, Relaciones * r){
+void HookClose(int * a, int k, Relaciones * c, Relaciones * p, Relaciones * r, int * mas){
 	int i, j;
 	if (c == NULL || p==NULL || a == NULL || r == NULL || k < 1){
 		return;
@@ -137,9 +142,10 @@ void HookClose(int * a, int k, Relaciones * c, Relaciones * p, Relaciones * r){
 				}
 			}			
 			a[k + 1] = i;
-			HookClose(a, k + 1, c, p, r);
+			HookClose(a, k + 1, c, p, r, mas);
 		}
 	}
+	(*mas)++;
 }
 
 int isInArray(int * a, int k, int n){

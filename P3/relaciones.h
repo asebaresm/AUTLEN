@@ -36,9 +36,9 @@ int getTam(Relaciones *m);
 
 int getMatrixData(Relaciones *m, int r, int c);
 
-void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r);
+void cierreTransitAFND1O(Relaciones *c, Relaciones *p, Relaciones *r, int * mas);
 
-void HookClose(int * a, int k, Relaciones * c, Relaciones *p, Relaciones * r);
+void HookClose(int * a, int k, Relaciones * c, Relaciones *p, Relaciones * r, int * mas);
 
 int isInArray(int * a, int k, int n);
 #endif

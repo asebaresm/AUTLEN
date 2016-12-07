@@ -34,6 +34,7 @@ typedef struct Afnds {
 	Relaciones *lambdatrix;
 	Relaciones *potencia_i;
 	Relaciones *relacion_inicial_i;
+	int mas;
 } AFND;
 
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
