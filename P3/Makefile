@@ -1,5 +1,5 @@
 #==================================================================================
-# BRIEF: Makefile de la librería de AFNDs, Práctica1
+# BRIEF: Makefile de la librería de AFNDs, Práctica3
 # AUTHOR: Alfonso Sebares, Juan Soberon 
 #==================================================================================
 
@@ -68,9 +68,6 @@ dot_creation: P3
 	dot -Tgif afnd1o_1.dot > afnd1o_1.gif
 	dot -Tgif afnd1o_1X.dot > afnd1o_1X.gif
 
-
-#valgrind_testP1: testP1
-#	valgrind --leak-check=full --show-leak-kinds=all ./testP1
 #==================================================================================
 #
 #

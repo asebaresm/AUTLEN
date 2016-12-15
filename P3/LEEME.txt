@@ -14,7 +14,7 @@ make valgrind_test
 	- Compila y realiza el test de Valgrind sobre el main 
 	proporcionado en el enunciado.
 
-make prueba_dinamica
-	- Compila y realiza el test de Valgrind sobre el fichero
-	de Moodle'pr_afnd_s3.c' que analiza la parte dinámica de
-	los AFND.
+make dot_creation
+	- Compila y ejecuta el main de prueba dado, tras lo cual crea
+	las imágenes correspondientes a los archivos .dot de los AFND1O
+	creados.
